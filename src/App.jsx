@@ -4,7 +4,8 @@ import Fuse from "fuse.js";
 import {
   Mail, ExternalLink, ChevronDown, Menu, X, Copy, CheckCircle,
   Star, Award, BookOpen, Search, Rocket, TrendingUp, Shield,
-  ArrowRight, Code, Database, Zap, Eye, Network, ArrowLeft
+  ArrowRight, Code, Database, Zap, Eye, Network, ArrowLeft,
+  Server, Activity
 } from "lucide-react";
 
 /* ============================================================
@@ -153,8 +154,40 @@ const SERVICES = [
   },
 ];
 
-const TOP_PROJECTS = [];
-const OTHER_PROJECTS = [];
+const TOP_PROJECTS = [
+  {
+    id: 1, 
+    category: "AI & Predictive Analytics as a Service",
+    title: "Customer Churn Risk Scoring API",
+    problem: "SaaS startups face high Customer Acquisition Costs (CAC) but lack the technical infrastructure to proactively identify and retain at-risk users before they cancel their subscriptions.",
+    desc: "A machine-learning-powered API and interactive dashboard designed to shift retention strategies from reactive to proactive. Processes incoming user behavior payloads (session length, support tickets) to return a real-time probability score and business risk level.",
+    tech: ["Python", "FastAPI", "Random Forest", "Streamlit", "Joblib", "Render"],
+    github: "https://github.com/rmlkloch/customer-churn-risk-api.git", 
+    live: "https://customer-churn-risk-api-jsnvxagbpmkhe5msv4ix6l.streamlit.app/", 
+    apiDocs: "https://customer-churn-risk-api.onrender.com/docs", 
+    badge: "Microservice", 
+    accent: "#7C3AED", 
+    bullets: [
+      "Engineered realistic synthetic SaaS dataset & deployed RF model as a live web service.",
+      "Implemented class weight balancing to ensure high recall for churning users.",
+      "Decoupled RESTful API backend allows clients to plug AI directly into React/Next.js apps."
+    ]
+  }
+];
+
+const OTHER_PROJECTS = [
+  { 
+    id: 1, 
+    title: "Customer Churn Risk API", 
+    category: "AI & Analytics", 
+    key: "ai", 
+    desc: "Decoupled FastAPI microservice and Streamlit dashboard that processes live SaaS user behavior to return real-time churn probability scores using Random Forest.", 
+    tech: ["FastAPI", "Random Forest", "Python", "Streamlit"], 
+    github: "https://github.com/rmlkloch/customer-churn-risk-api.git",
+    live: "https://customer-churn-risk-api-jsnvxagbpmkhe5msv4ix6l.streamlit.app/",
+    apiDocs: "https://customer-churn-risk-api.onrender.com/docs"
+  }
+];
 
 const RESEARCH = [
   {
@@ -166,7 +199,7 @@ const RESEARCH = [
 
 const TECH_STACK = [
   { name: "Python", emoji: "🐍" }, { name: "React", emoji: "⚛️" },
-  { name: "Next.js", emoji: "▲" },
+  { name: "FastAPI", emoji: "⚡" },
   { name: "Machine Learning", emoji: "🧠" }, { name: "Pandas", emoji: "🐼" },
   { name: "PyVista", emoji: "🔷" }, { name: "Trimesh", emoji: "📐" },
   { name: "Streamlit", emoji: "🚀" }, { name: "Flask", emoji: "🌶️" },
@@ -372,36 +405,46 @@ const iconBox = (color = Accent) => ({
 });
 
 /* ============================================================
-   NAV Component
+   NAV Component (Custom Smooth Scroll Fixes History Bugs)
    ============================================================ */
-function Nav({ currentView, setView }) {
+function Nav({ currentView, navigateToHome }) {
   const [open, setOpen] = useState(false);
   const homeLinks = [
-    { href: "#about", label: "About" }, { href: "#services", label: "Services" },
-    { href: "#projects", label: "Projects" }, { href: "#research", label: "Research" }, 
-    { href: "#leadership", label: "Leadership" }, { href: "#contact", label: "Contact" },
+    { id: "about", label: "About" }, { id: "services", label: "Services" },
+    { id: "projects", label: "Projects" }, { id: "research", label: "Research" }, 
+    { id: "leadership", label: "Leadership" }, { id: "contact", label: "Contact" },
   ];
+
+  const handleScroll = (e, id) => {
+    e.preventDefault();
+    setOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(2,8,23,0.88)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: "1px solid rgba(0,212,255,0.1)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
         
         {currentView === "home" ? (
-          <a href="#hero" style={{ fontFamily: "'Orbitron',monospace", color: Accent, fontWeight: 900, fontSize: "1.1rem", textDecoration: "none", letterSpacing: "0.05em" }}>&lt;R.M.L.K/&gt;</a>
+          <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Orbitron',monospace", color: Accent, fontWeight: 900, fontSize: "1.1rem", textDecoration: "none", letterSpacing: "0.05em", cursor: "pointer" }}>&lt;R.M.L.K/&gt;</button>
         ) : (
-          <button onClick={() => { setView("home"); window.scrollTo(0,0); }} style={{ background: "transparent", border: "none", color: "white", display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Inter', sans-serif", fontWeight: 700, cursor: "pointer" }}>
+          <button onClick={navigateToHome} style={{ background: "transparent", border: "none", color: "white", display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Inter', sans-serif", fontWeight: 700, cursor: "pointer" }}>
             <ArrowLeft size={18} color={Accent} /> Back to Home
           </button>
         )}
 
         {currentView === "home" && (
           <div className="desktop-nav" style={{ display: "flex", gap: "2rem" }}>
-            {homeLinks.map(l => <a key={l.href} href={l.href} className="nav-link">{l.label}</a>)}
+            {homeLinks.map(l => <button key={l.id} onClick={(e) => handleScroll(e, l.id)} className="nav-link">{l.label}</button>)}
           </div>
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          {currentView === "home" && <a href="#contact" className="accent-btn desktop-nav" style={{ padding: "0.45rem 1.2rem", fontSize: "0.8rem" }}>Hire Me</a>}
+          {currentView === "home" && <button onClick={(e) => handleScroll(e, 'contact')} className="accent-btn desktop-nav" style={{ padding: "0.45rem 1.2rem", fontSize: "0.8rem" }}>Hire Me</button>}
           {currentView === "home" && (
             <button className="mobile-menu-btn" onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: "white", cursor: "pointer", padding: "0.25rem" }}>
               {open ? <X size={22} /> : <Menu size={22} />}
@@ -412,8 +455,8 @@ function Nav({ currentView, setView }) {
 
       {open && currentView === "home" && (
         <div style={{ padding: "1rem 1.5rem", borderTop: "1px solid rgba(0,212,255,0.1)", display: "flex", flexDirection: "column", gap: "1rem", background: "rgba(2,8,23,0.97)" }}>
-          {homeLinks.map(l => <a key={l.href} href={l.href} className="nav-link" onClick={() => setOpen(false)} style={{ fontSize: "0.95rem" }}>{l.label}</a>)}
-          <a href="#contact" onClick={() => setOpen(false)} className="accent-btn" style={{ justifyContent: "center", marginTop: "0.5rem" }}>Hire Me</a>
+          {homeLinks.map(l => <button key={l.id} onClick={(e) => handleScroll(e, l.id)} className="nav-link" style={{ textAlign: "left", fontSize: "0.95rem", padding: "0.5rem 0" }}>{l.label}</button>)}
+          <button onClick={(e) => handleScroll(e, 'contact')} className="accent-btn" style={{ justifyContent: "center", marginTop: "0.5rem" }}>Hire Me</button>
         </div>
       )}
     </nav>
@@ -487,12 +530,26 @@ function FullProjectLibraryPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: "2rem" }}>
             {results.map(p => (
               <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "2rem", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", position: "relative" }}>
                   <span className="accent-chip">{p.category}</span>
-                  <a href={p.github} target="_blank" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
-                    onMouseEnter={e => e.currentTarget.style.color = Accent}
-                    onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
-                  ><Github size={20} /></a>
+                  <div style={{ display: "flex", gap: "0.6rem" }}>
+                    <a href={p.github} target="_blank" title="GitHub Source" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.color = Accent}
+                      onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                    ><Github size={18} /></a>
+                    {p.apiDocs && (
+                      <a href={p.apiDocs} target="_blank" title="API Docs" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
+                        onMouseEnter={e => e.currentTarget.style.color = Accent}
+                        onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                      ><Server size={18} /></a>
+                    )}
+                    {p.live && (
+                      <a href={p.live} target="_blank" title="Live Demo" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
+                        onMouseEnter={e => e.currentTarget.style.color = Accent}
+                        onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                      ><Activity size={18} /></a>
+                    )}
+                  </div>
                 </div>
                 <p style={{ fontFamily: "'Inter', sans-serif", color: "white", fontWeight: 700, fontSize: "1.15rem", marginBottom: "0.8rem" }}>{p.title}</p>
                 <Body style={{ fontSize: "0.95rem", marginBottom: "1.5rem", flexGrow: 1 }}>{p.desc}</Body>
@@ -522,6 +579,16 @@ function FullProjectLibraryPage() {
 function Hero({ copyEmail }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { const t = setTimeout(() => setVisible(true), 100); return () => clearTimeout(t); }, []);
+
+  const handleScroll = (e, id) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      const y = element.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section id="hero" style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: BG1, paddingTop: 64 }}>
       <HeroCanvas />
@@ -542,8 +609,8 @@ function Hero({ copyEmail }) {
           <Body style={{ fontSize: "1.05rem", marginBottom: "2rem", color: "rgba(255,255,255,0.75)" }}>{PERSONAL.pitch}</Body>
 
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            <a href="#projects" className="accent-btn">View Projects <ArrowRight size={15} /></a>
-            <a href="#contact" className="ghost-btn">Hire Me</a>
+            <button onClick={(e) => handleScroll(e, 'projects')} className="accent-btn">View Projects <ArrowRight size={15} /></button>
+            <button onClick={(e) => handleScroll(e, 'contact')} className="ghost-btn">Hire Me</button>
           </div>
 
           <div style={{ display: "flex", gap: "1rem", marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(0,212,255,0.12)" }}>
@@ -654,9 +721,9 @@ function Services() {
 }
 
 /* ============================================================
-   TOP PROJECTS (With Link to new Library Page)
+   TOP PROJECTS (Vertical Grid Layout)
    ============================================================ */
-function TopProjects({ setView }) {
+function TopProjects({ onNavigateToLibrary }) {
   const categories = [...new Set(TOP_PROJECTS.map(p => p.category))];
 
   return (
@@ -669,7 +736,7 @@ function TopProjects({ setView }) {
             <H>Top Projects</H>
             <Body style={{ marginTop: "0.5rem", maxWidth: 520 }}>My absolute best work, structured by specialization. Up to 5 featured projects per category.</Body>
           </div>
-          <button onClick={() => { setView("library"); window.scrollTo(0,0); }} className="accent-btn" style={{ padding: "0.6rem 1.5rem", fontSize: "0.85rem" }}>
+          <button onClick={onNavigateToLibrary} className="accent-btn" style={{ padding: "0.6rem 1.5rem", fontSize: "0.85rem" }}>
             Search Full Library <ArrowRight size={16} />
           </button>
         </div>
@@ -692,27 +759,58 @@ function TopProjects({ setView }) {
                 <div style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
                   {categoryProjects.map((p) => (
                     <div key={p.id} className="glass-card" style={{ padding: "2rem 2rem 2rem 2.25rem", position: "relative", overflow: "hidden" }}>
+                      
+                      <div style={{ position: "absolute", right: -40, top: -40, width: 280, height: 140, borderRadius: "50%", background: `${p.accent}12`, transform: "rotate(-15deg)", pointerEvents: "none" }} />
+                      
                       <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3.5, background: `linear-gradient(180deg,${p.accent},${p.accent}44)`, borderRadius: "2px 0 0 2px" }} />
-                      <div style={{ position: "absolute", right: -60, top: -60, width: 200, height: 200, borderRadius: "50%", background: `${p.accent}08`, pointerEvents: "none" }} />
 
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.75rem", marginBottom: "0.75rem", position: "relative" }}>
                         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.5rem" }}>
                           <span style={{ background: `${p.accent}22`, border: `1px solid ${p.accent}55`, color: p.accent, fontSize: "0.7rem", padding: "0.2rem 0.75rem", borderRadius: 100, fontFamily: "'Inter', sans-serif", fontWeight: 700, letterSpacing: "0.05em" }}>{p.badge}</span>
                         </div>
                         <div style={{ display: "flex", gap: "0.75rem" }}>
-                          <a href={p.github} target="_blank" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
+                          <a href={p.github} target="_blank" title="GitHub Source" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
                             onMouseEnter={e => e.currentTarget.style.color = Accent}
                             onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
                           ><Github size={18} /></a>
-                          {p.live && <a href={p.live} target="_blank" style={{ color: "rgba(255,255,255,0.4)" }}><ExternalLink size={18} /></a>}
+                          
+                          {p.apiDocs && (
+                            <a href={p.apiDocs} target="_blank" title="API Docs" style={{ color: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", gap: "0.3rem", transition: "color 0.2s", fontFamily: "'Inter', sans-serif", fontSize: "0.8rem", fontWeight: 600, textDecoration: "none" }}
+                              onMouseEnter={e => e.currentTarget.style.color = Accent}
+                              onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                            ><Server size={18} /> API</a>
+                          )}
+
+                          {p.live && (
+                            <a href={p.live} target="_blank" title="Live Demo" style={{ color: "rgba(255,255,255,0.4)", display: "flex", alignItems: "center", gap: "0.3rem", transition: "color 0.2s", fontFamily: "'Inter', sans-serif", fontSize: "0.8rem", fontWeight: 600, textDecoration: "none" }}
+                              onMouseEnter={e => e.currentTarget.style.color = Accent}
+                              onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                            ><Activity size={18} /> Live Demo</a>
+                          )}
                         </div>
                       </div>
 
                       <p style={{ fontFamily: "'Inter', sans-serif", color: "white", fontWeight: 700, fontSize: "1.2rem", marginBottom: "0.5rem", position: "relative" }}>{p.title}</p>
-                      <p style={{ fontFamily: "'Inter', sans-serif", color: "rgba(255,255,255,0.45)", fontSize: "0.9rem", marginBottom: "0.8rem", position: "relative" }}>
-                        <span style={{ color: p.accent, fontWeight: 600 }}>Problem: </span>{p.problem}
-                      </p>
+                      
+                      <div style={{ background: "rgba(255,255,255,0.03)", padding: "1rem", borderRadius: "8px", borderLeft: `2px solid ${p.accent}55`, marginBottom: "1rem", position: "relative" }}>
+                        <p style={{ fontFamily: "'Inter', sans-serif", color: "rgba(255,255,255,0.8)", fontSize: "0.9rem", lineHeight: 1.6 }}>
+                          <span style={{ color: p.accent, fontWeight: 700, display: "block", marginBottom: "0.2rem" }}>The Problem: </span>
+                          {p.problem}
+                        </p>
+                      </div>
+
                       <Body style={{ marginBottom: "1.1rem", position: "relative" }}>{p.desc}</Body>
+
+                      {p.bullets && p.bullets.length > 0 && (
+                        <ul style={{ listStyle: "none", marginBottom: "1.5rem", display: "flex", flexDirection: "column", gap: "0.4rem", position: "relative" }}>
+                          {p.bullets.map(b => (
+                            <li key={b} style={{ fontFamily: "'Inter', sans-serif", color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", display: "flex", alignItems: "flex-start", gap: "0.5rem", lineHeight: 1.5 }}>
+                              <span style={{ color: p.accent, marginTop: "0.1rem" }}>▹</span> {b}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", position: "relative" }}>
                         {p.tech.map(t => <span key={t} className="tech-chip">{t}</span>)}
                       </div>
@@ -729,7 +827,78 @@ function TopProjects({ setView }) {
 }
 
 /* ============================================================
-   RESEARCH 
+   PROJECT LIBRARY (Conditional Layout Fix)
+   ============================================================ */
+function ProjectLibrary() {
+  const [active, setActive] = useState("all");
+  const filtered = active === "all" ? OTHER_PROJECTS : OTHER_PROJECTS.filter(p => p.key === active);
+  
+  const isCarousel = filtered.length >= 5;
+  
+  return (
+    <section style={{ background: BG1, padding: "6rem 1.5rem", overflow: "hidden" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <Label>Library</Label>
+        <H>Comprehensive Project Library</H>
+        
+        <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", margin: "2rem 0" }}>
+          {FILTERS.map(f => (
+            <button key={f.key} className={`filter-btn ${active === f.key ? "filter-btn-active" : "filter-btn-inactive"}`} onClick={() => setActive(f.key)}>{f.label}</button>
+          ))}
+        </div>
+        
+        {isCarousel && (
+          <div className="carousel-container">
+            {filtered.map(p => (
+              <div key={p.id} className="glass-card carousel-card glass-card-hover" style={{ padding: "1.6rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.7rem" }}>
+                  <span className="accent-chip">{p.category}</span>
+                  <a href={p.github} target="_blank" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
+                    onMouseEnter={e => e.currentTarget.style.color = Accent}
+                    onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                  ><Github size={18} /></a>
+                </div>
+                <p style={{ fontFamily: "'Inter', sans-serif", color: "white", fontWeight: 700, fontSize: "1.05rem", marginBottom: "0.6rem" }}>{p.title}</p>
+                <Body style={{ fontSize: "0.9rem", marginBottom: "1rem", flexGrow: 1 }}>{p.desc}</Body>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "auto" }}>
+                  {p.tech.map(t => <span key={t} className="tech-chip">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!isCarousel && filtered.length > 0 && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "1.5rem", justifyContent: "center" }}>
+            {filtered.map(p => (
+              <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "1.6rem", display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.7rem" }}>
+                  <span className="accent-chip">{p.category}</span>
+                  <a href={p.github} target="_blank" style={{ color: "rgba(255,255,255,0.4)", transition: "color 0.2s" }}
+                    onMouseEnter={e => e.currentTarget.style.color = Accent}
+                    onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.4)"}
+                  ><Github size={18} /></a>
+                </div>
+                <p style={{ fontFamily: "'Inter', sans-serif", color: "white", fontWeight: 700, fontSize: "1.05rem", marginBottom: "0.6rem" }}>{p.title}</p>
+                <Body style={{ fontSize: "0.9rem", marginBottom: "1rem", flexGrow: 1 }}>{p.desc}</Body>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "auto" }}>
+                  {p.tech.map(t => <span key={t} className="tech-chip">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {filtered.length === 0 && (
+          <Body style={{ textAlign: "center", padding: "3rem 0", color: "rgba(255,255,255,0.3)" }}>Exciting new projects are currently under development. Check back soon!</Body>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   RESEARCH (Conditional Layout Fix)
    ============================================================ */
 function Research() {
   if (RESEARCH.length === 0) return null;
@@ -743,7 +912,7 @@ function Research() {
   const isCarousel = RESEARCH.length >= 5;
 
   return (
-    <section id="research" style={{ background: BG1, padding: "6rem 1.5rem", overflow: "hidden" }}>
+    <section id="research" style={{ background: BG2, padding: "6rem 1.5rem", overflow: "hidden" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <Label>Academia</Label>
         <H>Research Papers</H>
@@ -801,13 +970,13 @@ function Research() {
 }
 
 /* ============================================================
-   LEADERSHIP 
+   LEADERSHIP (Conditional Layout Fix)
    ============================================================ */
 function Leadership() {
   const isCarousel = LEADERSHIP_CARDS.length >= 5;
 
   return (
-    <section id="leadership" style={{ background: BG2, padding: "6rem 1.5rem", overflow: "hidden" }}>
+    <section id="leadership" style={{ background: BG1, padding: "6rem 1.5rem", overflow: "hidden" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <Label>Leadership & Discipline</Label>
         <H>Beyond the Code</H>
@@ -869,7 +1038,7 @@ function Leadership() {
    ============================================================ */
 function Contact({ copyEmail }) {
   return (
-    <section id="contact" style={{ background: BG1, padding: "6rem 1.5rem" }}>
+    <section id="contact" style={{ background: BG2, padding: "6rem 1.5rem" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <Label>Contact</Label>
         <H>Let's Build Together</H>
@@ -893,7 +1062,6 @@ function Contact({ copyEmail }) {
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap", marginBottom: "3rem" }}>
-            {/* UPDATED: Directly opens Gmail web composer */}
             <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${PERSONAL.email}`} target="_blank" rel="noopener noreferrer" className="accent-btn"><Mail size={18} /> Open Gmail</a>
             <button onClick={copyEmail} className="ghost-btn"><Copy size={18} /> Copy Email</button>
           </div>
@@ -919,7 +1087,7 @@ function Contact({ copyEmail }) {
    ============================================================ */
 function Footer({ copyEmail }) {
   return (
-    <footer style={{ background: BG2, borderTop: "1px solid rgba(0,212,255,0.1)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
+    <footer style={{ background: BG1, borderTop: "1px solid rgba(0,212,255,0.1)", padding: "2.5rem 1.5rem", textAlign: "center" }}>
       <p style={{ fontFamily: "'Orbitron',monospace", color: Accent, fontWeight: 900, fontSize: "1.1rem", marginBottom: "0.6rem" }}>&lt;R.M.L.K/&gt;</p>
       <p style={{ fontFamily: "'Inter', sans-serif", color: "rgba(255,255,255,0.35)", fontSize: "0.85rem" }}>
         © 2026 R.M Lochana Kalhara Ranathunga · Data Science & ML Engineer
@@ -941,11 +1109,48 @@ function Footer({ copyEmail }) {
 }
 
 /* ============================================================
-   ROOT APP (ROUTER)
+   ROOT APP (ROUTER & BROWSER HISTORY FIX)
    ============================================================ */
 export default function Portfolio() {
   const [currentView, setCurrentView] = useState("home"); 
   const [toastCounter, setToastCounter] = useState(0);
+  const scrollPosition = useRef(0);
+
+  useEffect(() => {
+    if (!window.history.state) {
+      window.history.replaceState({ view: 'home' }, '', window.location.pathname);
+    }
+
+    const handlePopState = (e) => {
+      if (e.state && e.state.view === 'library') {
+        setCurrentView("library");
+        window.scrollTo(0, 0);
+      } else {
+        setCurrentView("home");
+        setTimeout(() => window.scrollTo({ top: scrollPosition.current, behavior: "instant" }), 0);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const navigateToLibrary = () => {
+    scrollPosition.current = window.scrollY;
+    window.history.pushState({ view: 'library' }, '', '#library');
+    setCurrentView("library");
+    window.scrollTo(0, 0);
+  };
+
+  const navigateToHome = () => {
+    if (window.history.state && window.history.state.view === 'library') {
+      window.history.back(); 
+    } else {
+      window.history.pushState({ view: 'home' }, '', window.location.pathname);
+      setCurrentView("home");
+      setTimeout(() => window.scrollTo({ top: scrollPosition.current, behavior: "instant" }), 0);
+    }
+  };
 
   const copyEmail = (e) => {
     if (e) e.preventDefault();
@@ -956,7 +1161,7 @@ export default function Portfolio() {
   return (
     <div style={{ background: BG1, minHeight: "100vh", position: "relative" }}>
       <style>{GLOBAL_CSS}</style>
-      <Nav currentView={currentView} setView={setCurrentView} />
+      <Nav currentView={currentView} navigateToHome={navigateToHome} />
       
       {currentView === "home" ? (
         <>
@@ -966,7 +1171,7 @@ export default function Portfolio() {
           <div className="section-divider" />
           <Services />
           <div className="section-divider" />
-          <TopProjects setView={setCurrentView} />
+          <TopProjects onNavigateToLibrary={navigateToLibrary} />
           <div className="section-divider" />
           <Research />
           <div className="section-divider" />
@@ -980,7 +1185,6 @@ export default function Portfolio() {
       
       <Footer copyEmail={copyEmail} />
 
-      {/* GLOBAL TOAST CONTAINER */}
       <div className="toast-container">
         {toastCounter > 0 && <Toast key={toastCounter} />}
       </div>
