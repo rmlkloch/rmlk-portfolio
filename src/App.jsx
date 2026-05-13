@@ -33,7 +33,7 @@ const Fiverr = ({ size = 24, color = "currentColor" }) => (
 );
 
 /* ============================================================
-   GLOBAL STYLES + FONTS (Strict Constraint Fix)
+   GLOBAL STYLES + FONTS (VERCEL OVERRIDE FIX)
    ============================================================ */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap');
@@ -50,12 +50,15 @@ const GLOBAL_CSS = `
   ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
   ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
   
-  /* THE GLOBAL CONSTRAINT FIX */
-  .container {
-    max-width: 1024px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 0 1.5rem;
+  /* =========================================
+     THE VERCEL STRETCH FIX
+     Using !important guarantees Tailwind cannot overwrite this
+  ========================================= */
+  .page-container {
+    max-width: 1024px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    padding: 0 1.5rem !important;
   }
 
   /* LAYOUT SAFE ZONE FOR TRACKER */
@@ -421,16 +424,13 @@ function YScrollTracker() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // 1. Show tracker ONLY after scrolling past Hero
       if (window.scrollY > window.innerHeight * 0.6) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
 
-      // 2. Math-based active section logic
-      const triggerOffset = window.innerHeight * 0.4; 
-      const triggerLine = window.scrollY + triggerOffset; 
+      const triggerLine = window.scrollY + (window.innerHeight * 0.4); 
       let current = "";
       
       for (const id of trackSections) {
@@ -449,13 +449,12 @@ function YScrollTracker() {
       }
       setActiveSection(current);
 
-      // 3. Precise Progress Fill calculation
       const firstEl = document.getElementById(trackSections[0]);
       const lastEl = document.getElementById(trackSections[trackSections.length - 1]);
       
       if (firstEl && lastEl && trackerRef.current) {
-        const start = firstEl.offsetTop - triggerOffset;
-        const end = lastEl.offsetTop - triggerOffset;
+        const start = firstEl.offsetTop - (window.innerHeight * 0.4);
+        const end = lastEl.offsetTop - (window.innerHeight * 0.4);
         const totalDistance = end - start;
         const currentDistance = Math.max(0, window.scrollY - start);
         
@@ -465,7 +464,6 @@ function YScrollTracker() {
         }
         setProgressHeight(Math.min(100, Math.max(0, progress)));
 
-        // 4. THE PHYSICAL LOCK (Avoid Footer Overlap)
         if (window.scrollY > end) {
             const overscroll = window.scrollY - end;
             trackerRef.current.style.transform = `translateY(-${overscroll}px)`;
@@ -541,7 +539,7 @@ function Nav({ currentView, navigateToHome }) {
 
   return (
     <nav className="nav-wrapper">
-      <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+      <div className="page-container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
         
         {currentView === "home" ? (
           <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
@@ -607,7 +605,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
 
   return (
     <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div className="container">
+      <div className="page-container">
         <div className="hero-layout">
           
           <div className="hero-text-col">
@@ -703,7 +701,7 @@ function About() {
 
   return (
     <FadeSection id="about" style={{ padding: "6rem 0" }}>
-      <div className="container">
+      <div className="page-container">
         
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
           
@@ -765,7 +763,7 @@ function About() {
 function Services() {
   return (
     <FadeSection id="services" style={{ padding: "6rem 0" }}>
-      <div className="container">
+      <div className="page-container">
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <Label>Specialization</Label>
           <H>Services & Architecture</H>
@@ -794,7 +792,7 @@ function TopProjects({ onNavigateToLibrary }) {
 
   return (
     <FadeSection id="projects" style={{ padding: "6rem 0" }}>
-      <div className="container">
+      <div className="page-container">
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
           <div>
@@ -892,7 +890,7 @@ function FullProjectLibraryPage() {
   return (
     <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
       <FadeSection id="library-header" style={{ padding: "0 0" }}>
-        <div className="container">
+        <div className="page-container">
           <Label>Archive</Label>
           <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
           <Body style={{ marginTop: "1rem", marginBottom: "3rem", maxWidth: 600 }}>Browse the full archive of scripts, dashboards, and integrations. Use the smart search to find specific tech stacks.</Body>
@@ -951,7 +949,7 @@ function Research() {
 
   return (
     <FadeSection id="research" style={{ padding: "6rem 0" }}>
-      <div className="container">
+      <div className="page-container">
         <Label>Academia</Label>
         <H>Research Papers</H>
         
@@ -997,7 +995,7 @@ function Leadership() {
 
   return (
     <FadeSection id="leadership" style={{ padding: "6rem 0" }}>
-      <div className="container">
+      <div className="page-container">
         <Label>Discipline</Label>
         <H>Beyond the Code</H>
         <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
@@ -1052,7 +1050,7 @@ function Leadership() {
 function Contact({ copyEmail }) {
   return (
     <FadeSection id="hireme" style={{ padding: "6rem 0" }}>
-      <div className="container">
+      <div className="page-container">
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <Label>Hire Me</Label>
           <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>Let's Build Together</H>
@@ -1091,16 +1089,16 @@ function Contact({ copyEmail }) {
 }
 
 /* ============================================================
-   FOOTER (Tightened, normal height)
+   FOOTER
    ============================================================ */
 function Footer({ copyEmail }) {
   return (
-    <footer style={{ position: "relative", zIndex: 150, background: "#E7E7E7", borderTop: "1px solid #D1D1D1", padding: "1.5rem", textAlign: "center" }}>
-      <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.2rem", marginBottom: "0.25rem", letterSpacing: "-0.02em" }}>R.M.L.K.</p>
+    <footer style={{ position: "relative", zIndex: 150, background: "#E7E7E7", borderTop: "1px solid #D1D1D1", padding: "2rem 1.5rem", textAlign: "center" }}>
+      <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.5rem", marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>R.M.L.K.</p>
       <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.85rem", fontWeight: 500 }}>
-        © 2026 R.M Lochana Kalhara Ranathunga
+        © 2026 R.M Lochana Kalhara Ranathunga · Data Science & ML Engineer
       </p>
-      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "1rem" }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "1.5rem" }}>
         {[{ href: PERSONAL.linkedin, Icon: Linkedin }, { href: PERSONAL.github, Icon: Github }, { href: PERSONAL.fiverr, Icon: Fiverr }].map(({ href, Icon }, i) => (
           <a key={i} href={href} target="_blank" style={{ color: "#9B9B9B", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}>
             <Icon size={20} />
