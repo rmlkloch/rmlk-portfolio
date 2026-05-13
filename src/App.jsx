@@ -40,9 +40,9 @@ const GLOBAL_CSS = `
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior: smooth; }
   body { 
-    background-color: #E7E7E7; 
-    color: #1F2937; 
-    overflow-x: hidden; 
+    background-color: #E7E7E7 !important; 
+    color: #1F2937 !important; 
+    overflow-x: hidden !important; 
   }
   
   ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -50,7 +50,21 @@ const GLOBAL_CSS = `
   ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
   ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
   
-  /* LAYOUT SAFE ZONE FOR TRACKER */
+  /* =========================================
+     THE ANTI-STRETCH LOCK FOR VERCEL
+     This absolutely prevents wide-screen spreading
+  ========================================= */
+  .content-container {
+    max-width: 1100px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    box-sizing: border-box !important;
+  }
+
+  /* LAYOUT SAFE ZONE FOR LEFT TRACKER */
   .main-wrapper {
     width: 100%;
     transition: padding-left 0.3s ease;
@@ -81,7 +95,7 @@ const GLOBAL_CSS = `
     box-shadow: 0 8px 32px rgba(0,0,0,0.04); 
     border-radius: 16px; 
     backdrop-filter: blur(24px); 
-    WebkitBackdropFilter: blur(24px); 
+    -webkit-backdrop-filter: blur(24px); 
   }
   .glass-card-hover { transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease; }
   .glass-card-hover:hover { 
@@ -108,40 +122,40 @@ const GLOBAL_CSS = `
   .accent-btn { background:#1F2937; color:#FFFFFF; border:none; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); }
   .accent-btn:hover { background:#000000; transform:translateY(-2px); box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); }
   
-  .ghost-btn { background:rgba(255, 255, 255, 0.5); color:#1F2937; border:1px solid #D1D1D1; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .ghost-btn { background:rgba(255, 255, 255, 0.5); color:#1F2937; border:1px solid #D1D1D1; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .ghost-btn:hover { background:rgba(255, 255, 255, 0.9); border-color:#B6B6B6; transform:translateY(-2px); }
   
   .filter-btn { padding:0.5rem 1.25rem; border-radius:100px; font-size:0.85rem; font-family:'Inter', sans-serif; font-weight:600; cursor:pointer; transition:all 0.2s; letter-spacing:0.01em; }
   .filter-btn-active { background:#1F2937; color:#FFFFFF; border:1px solid #1F2937; }
-  .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .filter-btn-inactive:hover { border-color:#9B9B9B; color:#111827; }
   
   /* CHIPS */
-  .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); WebkitBackdropFilter: blur(5px); }
+  .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
   .accent-chip { background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.2); color:#059669; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; }
   .dynamic-chip { background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.2); color:#2563EB; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; animation: pulseGlow 2s infinite; }
   
   @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
-  .search-bar { width: 100%; max-width: 600px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); border: 1px solid #D1D1D1; border-radius: 100px; padding: 1rem 1.5rem 1rem 3.5rem; color: #1F2937; font-family: 'Inter', sans-serif; font-size: 1.05rem; outline: none; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+  .search-bar { width: 100%; max-width: 600px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid #D1D1D1; border-radius: 100px; padding: 1rem 1.5rem 1rem 3.5rem; color: #1F2937; font-family: 'Inter', sans-serif; font-size: 1.05rem; outline: none; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
   .search-bar:focus { border-color: #B6B6B6; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); background: #FFFFFF; }
   .search-icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #9B9B9B; }
 
   .carousel-container {
     display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;
     scroll-behavior: smooth; padding: 1.5rem 1rem 3rem 1rem; margin: -1.5rem -1rem 0 -1rem; 
-    WebkitOverflowScrolling: touch;
+    -webkit-overflow-scrolling: touch;
   }
   .carousel-card { scroll-snap-align: start; flex: 0 0 380px; display: flex; flex-direction: column; }
   
   .dropdown-container { position: relative; display: inline-block; }
-  .dropdown-content { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(255,255,255,0.95); min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid #D1D1D1; opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); padding: 0.5rem; z-index: 300; pointer-events: none; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .dropdown-content { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(255,255,255,0.95); min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid #D1D1D1; opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); padding: 0.5rem; z-index: 300; pointer-events: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .dropdown-container:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto; }
   .dropdown-item { display: block; padding: 0.75rem 1rem; color: #4B5563; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; border-radius: 8px; transition: background 0.2s, color 0.2s; text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; }
   .dropdown-item:hover { background: #E7E7E7; color: #111827; }
 
   .toast-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .toast { background: rgba(17, 24, 39, 0.95); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); color: white; padding: 0.85rem 1.75rem; border-radius: 100px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.6rem; animation: toastFade 3s ease-in-out forwards; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .toast { background: rgba(17, 24, 39, 0.95); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); color: white; padding: 0.85rem 1.75rem; border-radius: 100px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.6rem; animation: toastFade 3s ease-in-out forwards; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   @keyframes toastFade { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 10% { opacity: 1; transform: translateY(0) scale(1); } 90% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-20px) scale(0.9); } }
 
   /* ============================================================
@@ -153,11 +167,11 @@ const GLOBAL_CSS = `
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
     transition: opacity 0.5s ease;
   }
-  .yscroll-tracker-wrapper.hidden { opacity: 0; transition: opacity 0.4s ease; }
-  .yscroll-tracker-wrapper.visible { opacity: 1; transition: opacity 0.4s ease; }
+  .yscroll-tracker-wrapper.hidden { opacity: 0; pointer-events: none; }
+  .yscroll-tracker-wrapper.visible { opacity: 1; }
 
   .yscroll-track {
-    position: relative; height: 65vh; width: 100%;
+    position: relative; height: 60vh; width: 100%;
     display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
   }
   
@@ -167,14 +181,13 @@ const GLOBAL_CSS = `
   }
   
   .yscroll-line-bg {
-    position: absolute; inset: 0; 
-    background: linear-gradient(to bottom, transparent 0%, rgba(209, 209, 209, 0.6) 15%, rgba(209, 209, 209, 0.6) 85%, transparent 100%); 
+    position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
   }
   
   .yscroll-line-fill {
     position: absolute; top: 0; left: 0; width: 100%; 
-    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 120px), #10B981 100%);
-    transition: height 0.15s linear;
+    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
+    transition: height 0.1s linear;
   }
   
   .yscroll-node {
@@ -187,11 +200,9 @@ const GLOBAL_CSS = `
     width: 10px; height: 10px; border-radius: 50%;
     background: #E7E7E7; border: 2px solid #B6B6B6;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    flex-shrink: 0; opacity: 0.15; 
+    flex-shrink: 0; opacity: 0; transform: scale(0.5); 
   }
-  .yscroll-node.is-adjacent .yscroll-dot { 
-    opacity: 0.5; transform: scale(1);
-  }
+  .yscroll-node.is-adjacent .yscroll-dot { opacity: 0.5; transform: scale(1); }
   .yscroll-node.is-active .yscroll-dot {
     opacity: 1; background: #10B981; border-color: #10B981; 
     transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
@@ -409,19 +420,19 @@ function YScrollTracker() {
   const trackerRef = useRef(null);
 
   const trackSections = ["about", "services", "projects", "research", "leadership", "hireme"];
-  const trackLabels = ["About", "Services", "Projects", "Research", "Leadership", "Hire Me"];
+  const trackLabels = ["About", "Services", "Projects", "Research", "Leadership", "Contact"];
 
   useEffect(() => {
     const handleScroll = () => {
-      // 1. Show tracker ONLY after scrolling past Hero
-      if (window.scrollY > window.innerHeight * 0.6) {
+      // 1. Hide tracker ONLY on Hero Section
+      if (window.scrollY > window.innerHeight * 0.5) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
 
       // 2. Math-based active section logic
-      const triggerOffset = window.innerHeight * 0.35; 
+      const triggerOffset = window.innerHeight * 0.4; 
       const triggerLine = window.scrollY + triggerOffset; 
       let current = "";
       
@@ -533,7 +544,7 @@ function Nav({ currentView, navigateToHome }) {
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(255,255,255,0.65)", backdropFilter: "saturate(180%) blur(24px)", WebkitBackdropFilter: "saturate(180%) blur(24px)", borderBottom: "1px solid rgba(209, 209, 209, 0.5)", transition: "all 0.3s" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+      <div className="content-container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
         
         {currentView === "home" ? (
           <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
@@ -599,7 +610,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
 
   return (
     <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
+      <div className="content-container">
         <div className="hero-container" style={{ display: "flex", gap: "4rem" }}>
           
           <div className="hero-text" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -653,9 +664,9 @@ function Hero({ copyEmail, navigateToLibrary }) {
               </div>
               
               {/* SOLID WHITE STACKED BADGES */}
-              <div style={{ position: "absolute", bottom: "12%", right: "-20%", zIndex: 10, display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div className="hero-badges-wrapper" style={{ position: "absolute", bottom: "12%", right: "-20%", zIndex: 10, display: "flex", flexDirection: "column", gap: "1rem" }}>
                 
-                <div className="solid-badge hero-badges-wrapper" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", background: "#FFFFFF", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.08)", border: "1px solid #E7E7E7" }}>
+                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem" }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <TrendingUp size={18} color={Accent} />
                   </div>
@@ -665,7 +676,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
                   </div>
                 </div>
 
-                <div className="solid-badge hero-badges-wrapper" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", background: "#FFFFFF", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.08)", border: "1px solid #E7E7E7", marginLeft: "1.5rem" }}>
+                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", marginLeft: "1.5rem" }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Database size={18} color={Accent} />
                   </div>
@@ -694,8 +705,8 @@ function About() {
   const dynamicNewSkills = [...new Set(allProjectTech)].filter(tech => !hardcodedSkillsFlat.includes(tech.toLowerCase()));
 
   return (
-    <FadeSection id="about" style={{ padding: "6rem 1.5rem" }}>
-      <div className="container">
+    <FadeSection id="about" style={{ padding: "6rem 0" }}>
+      <div className="content-container">
         
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
           
@@ -756,8 +767,8 @@ function About() {
    ============================================================ */
 function Services() {
   return (
-    <FadeSection id="services" style={{ padding: "6rem 1.5rem" }}>
-      <div className="container">
+    <FadeSection id="services" style={{ padding: "6rem 0" }}>
+      <div className="content-container">
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <Label>Specialization</Label>
           <H>Services & Architecture</H>
@@ -785,8 +796,8 @@ function TopProjects({ onNavigateToLibrary }) {
   const categories = [...new Set(TOP_PROJECTS.map(p => p.category))];
 
   return (
-    <FadeSection id="projects" style={{ padding: "6rem 1.5rem" }}>
-      <div className="container">
+    <FadeSection id="projects" style={{ padding: "6rem 0" }}>
+      <div className="content-container">
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
           <div>
@@ -884,7 +895,7 @@ function FullProjectLibraryPage() {
   return (
     <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
       <FadeSection id="library-header" style={{ padding: "0 0" }}>
-        <div className="container">
+        <div className="content-container">
           <Label>Archive</Label>
           <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
           <Body style={{ marginTop: "1rem", marginBottom: "3rem", maxWidth: 600 }}>Browse the full archive of scripts, dashboards, and integrations. Use the smart search to find specific tech stacks.</Body>
@@ -942,8 +953,8 @@ function Research() {
   const isCarousel = RESEARCH.length >= 5;
 
   return (
-    <FadeSection id="research" style={{ padding: "6rem 1.5rem" }}>
-      <div className="container">
+    <FadeSection id="research" style={{ padding: "6rem 0" }}>
+      <div className="content-container">
         <Label>Academia</Label>
         <H>Research Papers</H>
         
@@ -988,8 +999,8 @@ function Leadership() {
   const isCarousel = LEADERSHIP_CARDS.length >= 5;
 
   return (
-    <FadeSection id="leadership" style={{ padding: "6rem 1.5rem" }}>
-      <div className="container">
+    <FadeSection id="leadership" style={{ padding: "6rem 0" }}>
+      <div className="content-container">
         <Label>Discipline</Label>
         <H>Beyond the Code</H>
         <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
@@ -1043,8 +1054,8 @@ function Leadership() {
    ============================================================ */
 function Contact({ copyEmail }) {
   return (
-    <FadeSection id="hireme" style={{ padding: "6rem 1.5rem" }}>
-      <div className="container">
+    <FadeSection id="hireme" style={{ padding: "6rem 0" }}>
+      <div className="content-container">
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <Label>Hire Me</Label>
           <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>Let's Build Together</H>
