@@ -3,8 +3,7 @@ import Fuse from "fuse.js";
 import {
   Mail, ChevronDown, Menu, X, Copy, CheckCircle,
   Star, Award, BookOpen, Search, Rocket, TrendingUp,
-  ArrowRight, Code, Database, Zap, Activity, Server, ArrowLeft,
-  ChevronsUpDown
+  ArrowRight, Code, Database, Zap, Activity, Server, ArrowLeft
 } from "lucide-react";
 
 /* ============================================================
@@ -33,43 +32,45 @@ const Fiverr = ({ size = 24, color = "currentColor" }) => (
 );
 
 /* ============================================================
-   GLOBAL STYLES + FONTS + ANTI-STRETCH FIX
+   GLOBAL STYLES & BULLETPROOF LAYOUT
    ============================================================ */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap');
+  
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior: smooth; }
   body { 
-    background-color: #E7E7E7; 
-    color: #1F2937; 
-    overflow-x: hidden; 
+    background-color: #E7E7E7 !important; 
+    color: #1F2937 !important; 
+    overflow-x: hidden !important; 
+    margin: 0; padding: 0;
   }
   
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background:#E7E7E7; }
   ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
   ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
-  
+
   /* =========================================
-     THE VERCEL ANTI-STRETCH LOCK 
-     Guarantees content stops stretching at 1280px
+     THE VERCEL ANTI-STRETCH LOCK (.rmlk-container)
+     This unique class prevents Tailwind from hijacking max-width
   ========================================= */
-  .main-wrapper {
-    width: 100%;
-    max-width: 1280px; 
-    margin: 0 auto;
-    transition: padding-left 0.3s ease;
-  }
-  @media (min-width: 1024px) {
-    .main-wrapper {
-      padding-left: 140px; 
-    }
+  .rmlk-container {
+    max-width: 1100px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    box-sizing: border-box !important;
   }
 
+  /* SECTION & ANIMATION UTILITIES */
   .fade-section { 
     opacity: 0; 
     transform: translateY(50px); 
     transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1); 
+    padding: 6rem 0; /* Padding applied outside container */
   }
   .fade-section.is-visible { 
     opacity: 1; 
@@ -79,13 +80,14 @@ const GLOBAL_CSS = `
   .nav-link { color:#1F2937; text-decoration:none; font-size:0.95rem; letter-spacing:0.02em; font-family:'Inter', sans-serif; font-weight:600; transition:color 0.2s; cursor: pointer; background: transparent; border: none; outline: none; display: flex; alignItems: center; gap: 0.25rem; }
   .nav-link:hover { color:#10B981; } 
   
+  /* STANDARD GLASSMORPHISM */
   .glass-card { 
     background: rgba(255, 255, 255, 0.6); 
     border: 1px solid #D1D1D1; 
     box-shadow: 0 8px 32px rgba(0,0,0,0.04); 
     border-radius: 16px; 
     backdrop-filter: blur(24px); 
-    WebkitBackdropFilter: blur(24px); 
+    -webkit-backdrop-filter: blur(24px); 
   }
   .glass-card-hover { transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease; }
   .glass-card-hover:hover { 
@@ -94,6 +96,7 @@ const GLOBAL_CSS = `
     box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
   }
   
+  /* SOLID BADGES (For Hero Image) */
   .solid-badge {
     background: #FFFFFF;
     border: 1px solid #E7E7E7;
@@ -107,131 +110,59 @@ const GLOBAL_CSS = `
     box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 
+  /* BUTTONS */
   .accent-btn { background:#1F2937; color:#FFFFFF; border:none; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); }
   .accent-btn:hover { background:#000000; transform:translateY(-2px); box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); }
   
-  .ghost-btn { background:rgba(255, 255, 255, 0.5); color:#1F2937; border:1px solid #D1D1D1; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .ghost-btn { background:rgba(255, 255, 255, 0.5); color:#1F2937; border:1px solid #D1D1D1; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .ghost-btn:hover { background:rgba(255, 255, 255, 0.9); border-color:#B6B6B6; transform:translateY(-2px); }
   
   .filter-btn { padding:0.5rem 1.25rem; border-radius:100px; font-size:0.85rem; font-family:'Inter', sans-serif; font-weight:600; cursor:pointer; transition:all 0.2s; letter-spacing:0.01em; }
   .filter-btn-active { background:#1F2937; color:#FFFFFF; border:1px solid #1F2937; }
-  .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .filter-btn-inactive:hover { border-color:#9B9B9B; color:#111827; }
   
-  .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); WebkitBackdropFilter: blur(5px); }
+  /* CHIPS */
+  .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
   .accent-chip { background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.2); color:#059669; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; }
   .dynamic-chip { background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.2); color:#2563EB; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; animation: pulseGlow 2s infinite; }
   
   @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
-  .search-bar { width: 100%; max-width: 600px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); border: 1px solid #D1D1D1; border-radius: 100px; padding: 1rem 1.5rem 1rem 3.5rem; color: #1F2937; font-family: 'Inter', sans-serif; font-size: 1.05rem; outline: none; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+  .search-bar { width: 100%; max-width: 600px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid #D1D1D1; border-radius: 100px; padding: 1rem 1.5rem 1rem 3.5rem; color: #1F2937; font-family: 'Inter', sans-serif; font-size: 1.05rem; outline: none; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
   .search-bar:focus { border-color: #B6B6B6; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); background: #FFFFFF; }
   .search-icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #9B9B9B; }
 
-  .carousel-container {
-    display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;
-    scroll-behavior: smooth; padding: 1.5rem 1rem 3rem 1rem; margin: -1.5rem -1rem 0 -1rem; 
-    WebkitOverflowScrolling: touch;
-  }
+  .carousel-container { display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 1.5rem 1rem 3rem 1rem; margin: -1.5rem -1rem 0 -1rem; -webkit-overflow-scrolling: touch; }
   .carousel-card { scroll-snap-align: start; flex: 0 0 380px; display: flex; flex-direction: column; }
   
   .dropdown-container { position: relative; display: inline-block; }
-  .dropdown-content { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(255,255,255,0.95); min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid #D1D1D1; opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); padding: 0.5rem; z-index: 300; pointer-events: none; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .dropdown-content { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(255,255,255,0.95); min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid #D1D1D1; opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); padding: 0.5rem; z-index: 300; pointer-events: none; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .dropdown-container:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto; }
   .dropdown-item { display: block; padding: 0.75rem 1rem; color: #4B5563; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; border-radius: 8px; transition: background 0.2s, color 0.2s; text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; }
   .dropdown-item:hover { background: #E7E7E7; color: #111827; }
 
   .toast-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .toast { background: rgba(17, 24, 39, 0.95); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); color: white; padding: 0.85rem 1.75rem; border-radius: 100px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.6rem; animation: toastFade 3s ease-in-out forwards; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
+  .toast { background: rgba(17, 24, 39, 0.95); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); color: white; padding: 0.85rem 1.75rem; border-radius: 100px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.6rem; animation: toastFade 3s ease-in-out forwards; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   @keyframes toastFade { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 10% { opacity: 1; transform: translateY(0) scale(1); } 90% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-20px) scale(0.9); } }
 
-  /* ============================================================
-     TRACKER WIDE SCREEN ALIGNMENT FIX
-     Locks the scroll line to the 1280px boundaries
-     ============================================================ */
-  .yscroll-fixed-bounds {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    max-width: 1280px; 
-    margin: 0 auto;
-    pointer-events: none;
-    z-index: 100;
-  }
+  /* HERO LAYOUT FIXES */
+  .hero-layout { display: flex; flex-direction: column-reverse; gap: 3rem; align-items: center; text-align: center; }
+  .hero-text-col { flex: 1.1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .hero-img-col { flex: 0.9; display: flex; justify-content: center; align-items: center; position: relative; min-height: 350px; width: 100%; }
+  .hero-badges-wrapper { position: static !important; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; transform: none !important; }
 
-  .yscroll-tracker-wrapper {
-    position: absolute; 
-    top: 0; left: 0; bottom: 0; width: 140px; 
-    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-    transition: opacity 0.5s ease;
-    pointer-events: auto; /* Re-enable clicks */
-  }
-  .yscroll-tracker-wrapper.hidden { opacity: 0; pointer-events: none; }
-  .yscroll-tracker-wrapper.visible { opacity: 1; pointer-events: auto; }
-
-  .yscroll-track {
-    position: relative; height: 60vh; width: 100%;
-    display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
-  }
+  .desktop-nav { display: none; }
+  .mobile-menu-btn { display: block; background: none; border: none; cursor: pointer; color: #1F2937; padding: 0.25rem; }
   
-  .yscroll-line-bounds {
-    position: absolute; left: 39px; top: 12px; bottom: 12px; width: 2px;
-    z-index: 0;
-  }
-  .yscroll-line-bg {
-    position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
-  }
-  .yscroll-line-fill {
-    position: absolute; top: 0; left: 0; width: 100%; 
-    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
-    transition: height 0.1s linear;
-  }
-  
-  .yscroll-node {
-    position: relative; display: flex; align-items: center; gap: 16px;
-    padding-left: 35px; 
-    pointer-events: auto; cursor: pointer; z-index: 2; height: 24px; width: 100%;
-  }
-  
-  .yscroll-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: #E7E7E7; border: 2px solid #B6B6B6;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    flex-shrink: 0; opacity: 0; transform: scale(0.5); 
-  }
-  .yscroll-node.is-adjacent .yscroll-dot { opacity: 0.5; transform: scale(1); }
-  .yscroll-node.is-active .yscroll-dot {
-    opacity: 1; background: #10B981; border-color: #10B981; 
-    transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
-  }
-  
-  .yscroll-label {
-    font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 700;
-    color: #9B9B9B; text-transform: uppercase; letter-spacing: 0.1em;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    transform-origin: left center; 
-    transform: translateX(-15px) scale(0.8); 
-    opacity: 0; 
-    pointer-events: none; white-space: nowrap;
-  }
-  .yscroll-node.is-adjacent .yscroll-label {
-    opacity: 0.4; transform: translateX(-5px) scale(0.95);
-  }
-  .yscroll-node.is-active .yscroll-label {
-    opacity: 1; color: #10B981; font-weight: 900; 
-    transform: translateX(0) scale(1.25);
-  }
-
-  @media (max-width: 1024px) { 
-    .desktop-nav { display:none!important; } 
-    .yscroll-tracker-wrapper { display: none; } 
-    .hero-container { flex-direction: column-reverse; text-align: center; gap: 3rem !important; }
-    .hero-text { align-items: center; }
-    .hero-badges-wrapper { position: static!important; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; transform: none!important; }
-  }
-  @media (min-width: 1025px) { 
-    .mobile-menu-btn { display:none!important; } 
-    .hero-container { flex-direction: row; justify-content: space-between; align-items: center; }
-    .hero-text { max-width: 600px; text-align: left; align-items: flex-start; }
+  @media (min-width: 1024px) { 
+    .desktop-nav { display: flex; gap: 2.5rem; align-items: center; }
+    .mobile-menu-btn { display: none !important; }
+    
+    .hero-layout { flex-direction: row; text-align: left; }
+    .hero-text-col { align-items: flex-start; }
+    .hero-img-col { min-height: 450px; }
+    .hero-badges-wrapper { position: absolute !important; bottom: 12% !important; right: -20% !important; margin-top: 0; display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; }
   }
 `;
 
@@ -387,7 +318,9 @@ function FadeSection({ children, id, style = {} }) {
 
   return (
     <section id={id} ref={domRef} className={`fade-section ${isVisible ? 'is-visible' : ''}`} style={style}>
-      {children}
+      <div className="rmlk-container">
+        {children}
+      </div>
     </section>
   );
 }
@@ -407,117 +340,6 @@ function Toast() {
 }
 
 /* ============================================================
-   CREATIVE CAMERA ZOOM SCROLL TRACKER
-   ============================================================ */
-function YScrollTracker() {
-  const [activeSection, setActiveSection] = useState("");
-  const [progressHeight, setProgressHeight] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const trackerRef = useRef(null);
-
-  const trackSections = ["about", "services", "projects", "research", "leadership", "hireme"];
-  const trackLabels = ["About", "Services", "Projects", "Research", "Leadership", "Contact"];
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // 1. Hide tracker ONLY on Hero Section
-      if (window.scrollY > window.innerHeight * 0.5) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-
-      // 2. Math-based active section logic
-      const triggerOffset = window.innerHeight * 0.4; 
-      const triggerLine = window.scrollY + triggerOffset; 
-      let current = "";
-      
-      for (const id of trackSections) {
-        const el = document.getElementById(id);
-        if (el) {
-          const elTop = el.offsetTop - 80; 
-          const elBottom = elTop + el.offsetHeight;
-          if (triggerLine >= elTop && triggerLine < elBottom) {
-            current = id;
-          }
-        }
-      }
-
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
-        current = "hireme";
-      }
-      setActiveSection(current);
-
-      // 3. Precise Progress Fill calculation
-      const firstEl = document.getElementById(trackSections[0]);
-      const lastEl = document.getElementById(trackSections[trackSections.length - 1]);
-      
-      if (firstEl && lastEl && trackerRef.current) {
-        const start = firstEl.offsetTop - (window.innerHeight * 0.4);
-        const end = lastEl.offsetTop - (window.innerHeight * 0.4);
-        const totalDistance = end - start;
-        const currentDistance = Math.max(0, window.scrollY - start);
-        
-        let progress = 0;
-        if (totalDistance > 0) {
-          progress = (currentDistance / totalDistance) * 100;
-        }
-        setProgressHeight(Math.min(100, Math.max(0, progress)));
-
-        // 4. THE PHYSICAL LOCK (Avoid Footer Overlap)
-        if (window.scrollY > end) {
-            const overscroll = window.scrollY - end;
-            trackerRef.current.style.transform = `translateY(-${overscroll}px)`;
-        } else {
-            trackerRef.current.style.transform = `translateY(0px)`;
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
-  };
-
-  const activeIndex = trackSections.indexOf(activeSection);
-
-  return (
-    <div className="yscroll-fixed-bounds">
-      <div className={`yscroll-tracker-wrapper ${isVisible ? 'visible' : 'hidden'}`} ref={trackerRef}>
-        <div className="yscroll-track">
-          
-          <div className="yscroll-line-bounds">
-              <div className="yscroll-line-bg"></div>
-              <div className="yscroll-line-fill" style={{ height: `${progressHeight}%` }}></div>
-          </div>
-          
-          {trackSections.map((id, index) => {
-            const isActive = index === activeIndex;
-            const isAdjacent = Math.abs(index - activeIndex) === 1;
-            
-            let nodeClass = "yscroll-node";
-            if (isActive) nodeClass += " is-active";
-            else if (isAdjacent) nodeClass += " is-adjacent";
-
-            return (
-              <div key={id} className={nodeClass} onClick={() => scrollToSection(id)}>
-                <div className="yscroll-dot"></div>
-                <span className="yscroll-label">{trackLabels[index]}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ============================================================
    NAV Component
    ============================================================ */
 function Nav({ currentView, navigateToHome }) {
@@ -530,19 +352,23 @@ function Nav({ currentView, navigateToHome }) {
       navigateToHome();
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
       }, 100);
       return;
     }
     const element = document.getElementById(id);
     if (element) {
-      window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
+      const top = element.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(255,255,255,0.65)", backdropFilter: "saturate(180%) blur(24px)", WebkitBackdropFilter: "saturate(180%) blur(24px)", borderBottom: "1px solid rgba(209, 209, 209, 0.5)", transition: "all 0.3s" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+      <div className="rmlk-container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
         
         {currentView === "home" ? (
           <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
@@ -553,7 +379,7 @@ function Nav({ currentView, navigateToHome }) {
         )}
 
         {currentView === "home" && (
-          <div className="desktop-nav" style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
+          <div className="desktop-nav">
             <button onClick={(e) => handleScroll(e, 'about')} className="nav-link">About</button>
             <button onClick={(e) => handleScroll(e, 'services')} className="nav-link">Services</button>
             
@@ -574,7 +400,7 @@ function Nav({ currentView, navigateToHome }) {
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {currentView === "home" && <button onClick={(e) => handleScroll(e, 'hireme')} className="accent-btn desktop-nav" style={{ padding: "0.5rem 1.4rem" }}>Hire Me</button>}
           {currentView === "home" && (
-            <button className="mobile-menu-btn" onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: TextMain, cursor: "pointer", padding: "0.25rem" }}>
+            <button className="mobile-menu-btn" onClick={() => setOpen(!open)}>
               {open ? <X size={24} /> : <Menu size={24} />}
             </button>
           )}
@@ -602,93 +428,90 @@ function Hero({ copyEmail, navigateToLibrary }) {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
+      const top = element.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
   return (
-    <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
-        <div className="hero-container" style={{ display: "flex", gap: "4rem" }}>
-          
-          <div className="hero-text" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: 100, padding: "0.4rem 1.25rem", marginBottom: "2rem", alignSelf: "flex-start" }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: Accent, animation: "pulse 2s infinite" }} />
-              <span style={{ fontFamily: "'Inter', sans-serif", color: "#10B981", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" }}>{PERSONAL.status}</span>
-            </div>
-
-            <h1 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontSize: "clamp(2.8rem, 6vw, 5rem)", fontWeight: 900, lineHeight: 1.1, marginBottom: "1rem", letterSpacing: "-0.03em" }}>
-              Hi, I'm Lochana.
-            </h1>
-            <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)", fontWeight: 500, marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
-              {PERSONAL.title}
-            </p>
-            
-            <Body style={{ fontSize: "1.1rem", marginBottom: "2.5rem", maxWidth: 540 }}>{PERSONAL.pitch}</Body>
-
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "3rem" }}>
-              <button onClick={(e) => handleScroll(e, 'projects')} className="accent-btn">View Projects <ArrowRight size={18} /></button>
-              <button id="btn-lib" onClick={navigateToLibrary} className="ghost-btn">Full Library</button>
-            </div>
-
-            <div style={{ display: "flex", gap: "1.25rem", alignItems: "center", flexWrap: "wrap" }}>
-              {[{ href: PERSONAL.linkedin, Icon: Linkedin }, { href: PERSONAL.github, Icon: Github }, { href: PERSONAL.fiverr, Icon: Fiverr }].map(({ href, Icon }, i) => (
-                <a key={i} href={href} target="_blank" style={{ color: "#B6B6B6", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#B6B6B6"}>
-                  <Icon size={22} />
-                </a>
-              ))}
-              <div style={{ width: 1, height: 24, background: "#D1D1D1" }} />
-              <button onClick={copyEmail} style={{ background: "none", border: "none", display: "flex", alignItems: "center", gap: "0.5rem", color: "#9B9B9B", fontSize: "0.95rem", fontFamily: "'Inter', sans-serif", fontWeight: 600, cursor: "pointer", padding: 0 }}
-                onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}
-              ><Mail size={18} /> rmlkkalhara@gmail.com</button>
-            </div>
+    <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: "80px" }}>
+      <div className="hero-layout">
+        
+        <div className="hero-text-col">
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: 100, padding: "0.4rem 1.25rem", marginBottom: "2rem" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: Accent, animation: "pulse 2s infinite" }} />
+            <span style={{ fontFamily: "'Inter', sans-serif", color: "#10B981", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" }}>{PERSONAL.status}</span>
           </div>
 
-          <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", minHeight: "450px" }}>
-            <div style={{ position: "relative", width: "100%", maxWidth: "420px", aspectRatio: "1/1" }}>
-              
-              <div style={{ position: "absolute", inset: "-10%", border: "2px solid #D1D1D1", borderRadius: "50%", pointerEvents: "none" }} />
-              <div style={{ position: "absolute", inset: "-5%", border: "1px dashed #B6B6B6", borderRadius: "50%", animation: "spin 30s linear infinite", pointerEvents: "none" }} />
-              <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
-              
-              <div style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", background: "#E7E7E7", border: "8px solid #FFFFFF", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.1)", zIndex: 5 }}>
-                <img src="/profile.jpg" alt="R.M Lochana Kalhara Ranathunga" style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1, position: "relative" }} 
-                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} 
-                />
-                <div style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", color: "#9B9B9B", padding: "2rem", textAlign: "center" }}>
-                  <Code size={48} style={{ marginBottom: "1rem", opacity: 0.5 }} />
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>Add <b>profile.jpg</b> to<br/>your public folder.</p>
-                </div>
-              </div>
-              
-              {/* SOLID WHITE STACKED BADGES */}
-              <div className="hero-badges-wrapper" style={{ position: "absolute", bottom: "12%", right: "-20%", zIndex: 10, display: "flex", flexDirection: "column", gap: "1rem" }}>
-                
-                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <TrendingUp size={18} color={Accent} />
-                  </div>
-                  <div>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: "0.9rem", color: TextMain, lineHeight: 1.1 }}>Data Science</p>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.75rem", color: "#9B9B9B" }}>Specialization</p>
-                  </div>
-                </div>
-
-                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", marginLeft: "1.5rem" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Database size={18} color={Accent} />
-                  </div>
-                  <div>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: "0.9rem", color: TextMain, lineHeight: 1.1 }}>Machine Learning</p>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.75rem", color: "#9B9B9B" }}>Specialization</p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
+          <h1 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontSize: "clamp(2.8rem, 6vw, 5rem)", fontWeight: 900, lineHeight: 1.1, marginBottom: "1rem", letterSpacing: "-0.03em" }}>
+            Hi, I'm Lochana.
+          </h1>
+          <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)", fontWeight: 500, marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
+            {PERSONAL.title}
+          </p>
           
+          <Body style={{ fontSize: "1.1rem", marginBottom: "2.5rem", maxWidth: 540 }}>{PERSONAL.pitch}</Body>
+
+          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "3rem", justifyContent: "center" }}>
+            <button onClick={(e) => handleScroll(e, 'projects')} className="accent-btn">View Projects <ArrowRight size={18} /></button>
+            <button id="btn-lib" onClick={navigateToLibrary} className="ghost-btn">Full Library</button>
+          </div>
+
+          <div style={{ display: "flex", gap: "1.25rem", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+            {[{ href: PERSONAL.linkedin, Icon: Linkedin }, { href: PERSONAL.github, Icon: Github }, { href: PERSONAL.fiverr, Icon: Fiverr }].map(({ href, Icon }, i) => (
+              <a key={i} href={href} target="_blank" style={{ color: "#B6B6B6", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#B6B6B6"}>
+                <Icon size={22} />
+              </a>
+            ))}
+            <div style={{ width: 1, height: 24, background: "#D1D1D1" }} />
+            <button onClick={copyEmail} style={{ background: "none", border: "none", display: "flex", alignItems: "center", gap: "0.5rem", color: "#9B9B9B", fontSize: "0.95rem", fontFamily: "'Inter', sans-serif", fontWeight: 600, cursor: "pointer", padding: 0 }}
+              onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}
+            ><Mail size={18} /> rmlkkalhara@gmail.com</button>
+          </div>
         </div>
+
+        <div className="hero-img-col">
+          <div style={{ position: "relative", width: "100%", maxWidth: "420px", aspectRatio: "1/1", margin: "0 auto" }}>
+            
+            <div style={{ position: "absolute", inset: "-10%", border: "2px solid #D1D1D1", borderRadius: "50%", pointerEvents: "none" }} />
+            <div style={{ position: "absolute", inset: "-5%", border: "1px dashed #B6B6B6", borderRadius: "50%", animation: "spin 30s linear infinite", pointerEvents: "none" }} />
+            <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+            
+            <div style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", background: "#E7E7E7", border: "8px solid #FFFFFF", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.1)", zIndex: 5 }}>
+              <img src="/profile.jpg" alt="R.M Lochana Kalhara Ranathunga" style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1, position: "relative" }} 
+                onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} 
+              />
+              <div style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", color: "#9B9B9B", padding: "2rem", textAlign: "center" }}>
+                <Code size={48} style={{ marginBottom: "1rem", opacity: 0.5 }} />
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>Add <b>profile.jpg</b> to<br/>your public folder.</p>
+              </div>
+            </div>
+            
+            <div className="hero-badges-wrapper">
+              <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <TrendingUp size={18} color={Accent} />
+                </div>
+                <div>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: "0.9rem", color: TextMain, lineHeight: 1.1 }}>Data Science</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.75rem", color: "#9B9B9B" }}>Specialization</p>
+                </div>
+              </div>
+
+              <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", marginLeft: "1.5rem" }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Database size={18} color={Accent} />
+                </div>
+                <div>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: "0.9rem", color: TextMain, lineHeight: 1.1 }}>Machine Learning</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.75rem", color: "#9B9B9B" }}>Specialization</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
       </div>
     </FadeSection>
   );
@@ -703,7 +526,7 @@ function About() {
   const dynamicNewSkills = [...new Set(allProjectTech)].filter(tech => !hardcodedSkillsFlat.includes(tech.toLowerCase()));
 
   return (
-    <FadeSection id="about" style={{ padding: "6rem 1.5rem" }}>
+    <FadeSection id="about">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
         
         <div>
@@ -762,7 +585,7 @@ function About() {
    ============================================================ */
 function Services() {
   return (
-    <FadeSection id="services" style={{ padding: "6rem 1.5rem" }}>
+    <FadeSection id="services">
       <div style={{ textAlign: "center", marginBottom: "4rem" }}>
         <Label>Specialization</Label>
         <H>Services & Architecture</H>
@@ -789,7 +612,7 @@ function TopProjects({ onNavigateToLibrary }) {
   const categories = [...new Set(TOP_PROJECTS.map(p => p.category))];
 
   return (
-    <FadeSection id="projects" style={{ padding: "6rem 1.5rem" }}>
+    <FadeSection id="projects">
       
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
         <div>
@@ -884,8 +707,8 @@ function FullProjectLibraryPage() {
   }, [searchTerm, activeFilter, fuse]);
 
   return (
-    <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
-      <FadeSection id="library-header" style={{ padding: "0 1.5rem" }}>
+    <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem" }}>
+      <FadeSection id="library-header" style={{ paddingTop: 0 }}>
         
         <Label>Archive</Label>
         <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
@@ -943,7 +766,7 @@ function Research() {
   const isCarousel = RESEARCH.length >= 5;
 
   return (
-    <FadeSection id="research" style={{ padding: "6rem 1.5rem" }}>
+    <FadeSection id="research">
       
       <Label>Academia</Label>
       <H>Research Papers</H>
@@ -989,7 +812,7 @@ function Leadership() {
   const isCarousel = LEADERSHIP_CARDS.length >= 5;
 
   return (
-    <FadeSection id="leadership" style={{ padding: "6rem 1.5rem" }}>
+    <FadeSection id="leadership">
       
       <Label>Discipline</Label>
       <H>Beyond the Code</H>
@@ -1044,7 +867,7 @@ function Leadership() {
    ============================================================ */
 function Contact({ copyEmail }) {
   return (
-    <FadeSection id="hireme" style={{ padding: "6rem 1.5rem" }}>
+    <FadeSection id="hireme">
       <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
         <Label>Hire Me</Label>
         <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>Let's Build Together</H>
@@ -1076,7 +899,6 @@ function Contact({ copyEmail }) {
              ))}
           </div>
         </div>
-
       </div>
     </FadeSection>
   );
@@ -1087,7 +909,7 @@ function Contact({ copyEmail }) {
    ============================================================ */
 function Footer({ copyEmail }) {
   return (
-    <footer style={{ position: "relative", zIndex: 150, background: "#E7E7E7", borderTop: "1px solid #D1D1D1", padding: "2rem 1.5rem", textAlign: "center" }}>
+    <footer style={{ position: "relative", zIndex: 150, background: "#E7E7E7", borderTop: "1px solid #D1D1D1", padding: "2rem 1.5rem", textAlign: "center", width: "100%" }}>
       <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.5rem", marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>R.M.L.K.</p>
       <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.85rem", fontWeight: 500 }}>
         © 2026 R.M Lochana Kalhara Ranathunga · Data Science & ML Engineer
@@ -1104,14 +926,19 @@ function Footer({ copyEmail }) {
 }
 
 /* ============================================================
-   ROOT APP (VERCEL STRETCH FIX APPLIED HERE)
+   ROOT APP
    ============================================================ */
 export default function Portfolio() {
   const [currentView, setCurrentView] = useState("home"); 
   const [toastCounter, setToastCounter] = useState(0);
   const scrollPosition = useRef(0);
 
+  // INJECT CSS INTO HEAD
   useEffect(() => {
+    const styleEl = document.createElement('style');
+    styleEl.innerHTML = GLOBAL_CSS;
+    document.head.appendChild(styleEl);
+
     if (!window.history.state) {
       window.history.replaceState({ view: 'home' }, '', window.location.pathname);
     }
@@ -1125,7 +952,10 @@ export default function Portfolio() {
       }
     };
     window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      document.head.removeChild(styleEl);
+    };
   }, []);
 
   const navigateToLibrary = () => {
@@ -1152,27 +982,28 @@ export default function Portfolio() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", position: "relative", overflowX: "hidden" }}>
+    <>
       <style>{GLOBAL_CSS}</style>
       
       <Nav currentView={currentView} navigateToHome={navigateToHome} />
 
-      <div className="main-wrapper">
-        {currentView === "home" && <YScrollTracker />}
+      <div className="rmlk-container">
         
-        {currentView === "home" ? (
-          <>
-            <Hero copyEmail={copyEmail} navigateToLibrary={navigateToLibrary} />
-            <About />
-            <Services />
-            <TopProjects onNavigateToLibrary={navigateToLibrary} />
-            <Research />
-            <Leadership />
-            <Contact copyEmail={copyEmail} />
-          </>
-        ) : (
-          <FullProjectLibraryPage />
-        )}
+        <div className="main-content-wrapper">
+          {currentView === "home" ? (
+            <>
+              <Hero copyEmail={copyEmail} navigateToLibrary={navigateToLibrary} />
+              <About />
+              <Services />
+              <TopProjects onNavigateToLibrary={navigateToLibrary} />
+              <Research />
+              <Leadership />
+              <Contact copyEmail={copyEmail} />
+            </>
+          ) : (
+            <FullProjectLibraryPage />
+          )}
+        </div>
         
       </div>
       
@@ -1181,6 +1012,6 @@ export default function Portfolio() {
       <div className="toast-container">
         {toastCounter > 0 && <Toast key={toastCounter} />}
       </div>
-    </div>
+    </>
   );
 }
