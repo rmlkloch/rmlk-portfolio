@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Fuse from "fuse.js";
 import {
   Mail, ChevronDown, Menu, X, Copy, CheckCircle,
   Star, Award, BookOpen, Search, Rocket, TrendingUp,
-  ArrowRight, Code, Database, Zap, Activity, Server, ArrowLeft,
-  ChevronsUpDown
+  ArrowRight, Code, Database, Zap, Activity, Server, ArrowLeft
 } from "lucide-react";
 
 /* ============================================================
@@ -12,54 +11,73 @@ import {
    ============================================================ */
 const Github = ({ size = 24, color = "currentColor" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 9 18v4"></path>
-    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A4.8 4.8 0 0 0 9 18v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
   </svg>
 );
 
 const Linkedin = ({ size = 24, color = "currentColor" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-    <rect x="2" y="9" width="4" height="12"></rect>
-    <circle cx="4" cy="4" r="2"></circle>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect x="2" y="9" width="4" height="12" />
+    <circle cx="4" cy="4" r="2" />
   </svg>
 );
 
 const Fiverr = ({ size = 24, color = "currentColor" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M19.256 9.404h-4.32v-2.32c0-.992.8-1.8 1.792-1.8h2.528V2.116h-2.528c-2.424 0-4.4 1.976-4.4 4.4v2.888H9.68v3.168h2.648v9.312h3.32v-9.312h3.608V9.404z"></path>
-    <circle cx="5.04" cy="15.828" r="3.24"></circle>
+    <path d="M19.256 9.404h-4.32v-2.32c0-.992.8-1.8 1.792-1.8h2.528V2.116h-2.528c-2.424 0-4.4 1.976-4.4 4.4v2.888H9.68v3.168h2.648v9.312h3.32v-9.312h3.608V9.404z" />
+    <circle cx="5.04" cy="15.828" r="3.24" />
   </svg>
 );
 
 /* ============================================================
-   GLOBAL STYLES + FONTS + ANTI-STRETCH FIX
+   GLOBAL STYLES + FONTS - FIXED FOR RESPONSIVENESS & VERCEL
    ============================================================ */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap');
-  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
+  
+  *, *::before, *::after { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+  }
+  
+  html { 
+    scroll-behavior: smooth; 
+    -webkit-text-size-adjust: 100%;
+  }
+  
   body { 
     background-color: #E7E7E7; 
     color: #1F2937; 
-    overflow-x: hidden; 
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
   }
   
   ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background:#E7E7E7; }
-  ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
-  ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
+  ::-webkit-scrollbar-track { background: #E7E7E7; }
+  ::-webkit-scrollbar-thumb { background: #B6B6B6; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9B9B9B; }
   
   /* =========================================
-     THE VERCEL ANTI-STRETCH LOCK 
-     Guarantees content stops stretching at 1280px
+     ANTI-STRETCH CONTAINER - VERCEL FIX
   ========================================= */
+  .content-container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+    box-sizing: border-box;
+  }
+
   .main-wrapper {
     width: 100%;
-    max-width: 1280px; 
-    margin: 0 auto;
     transition: padding-left 0.3s ease;
   }
+  
   @media (min-width: 1024px) {
     .main-wrapper {
       padding-left: 140px; 
@@ -76,8 +94,23 @@ const GLOBAL_CSS = `
     transform: translateY(0); 
   }
   
-  .nav-link { color:#1F2937; text-decoration:none; font-size:0.95rem; letter-spacing:0.02em; font-family:'Inter', sans-serif; font-weight:600; transition:color 0.2s; cursor: pointer; background: transparent; border: none; outline: none; display: flex; alignItems: center; gap: 0.25rem; }
-  .nav-link:hover { color:#10B981; } 
+  .nav-link { 
+    color: #1F2937; 
+    text-decoration: none; 
+    font-size: 0.95rem; 
+    letter-spacing: 0.02em; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: 600; 
+    transition: color 0.2s; 
+    cursor: pointer; 
+    background: transparent; 
+    border: none; 
+    outline: none; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.25rem; 
+  }
+  .nav-link:hover { color: #10B981; } 
   
   .glass-card { 
     background: rgba(255, 255, 255, 0.6); 
@@ -85,12 +118,14 @@ const GLOBAL_CSS = `
     box-shadow: 0 8px 32px rgba(0,0,0,0.04); 
     border-radius: 16px; 
     backdrop-filter: blur(24px); 
-    WebkitBackdropFilter: blur(24px); 
+    -webkit-backdrop-filter: blur(24px); 
   }
-  .glass-card-hover { transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease; }
+  .glass-card-hover { 
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease; 
+  }
   .glass-card-hover:hover { 
-    transform:translateY(-8px); 
-    border-color:#9B9B9B; 
+    transform: translateY(-8px); 
+    border-color: #9B9B9B; 
     box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
   }
   
@@ -107,131 +142,421 @@ const GLOBAL_CSS = `
     box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 
-  .accent-btn { background:#1F2937; color:#FFFFFF; border:none; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); }
-  .accent-btn:hover { background:#000000; transform:translateY(-2px); box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); }
+  .accent-btn { 
+    background: #1F2937; 
+    color: #FFFFFF; 
+    border: none; 
+    padding: 0.75rem 2rem; 
+    border-radius: 10px; 
+    font-weight: 700; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 0.95rem; 
+    cursor: pointer; 
+    text-decoration: none; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    transition: all 0.2s; 
+    box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); 
+  }
+  .accent-btn:hover { 
+    background: #000000; 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); 
+  }
   
-  .ghost-btn { background:rgba(255, 255, 255, 0.5); color:#1F2937; border:1px solid #D1D1D1; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
-  .ghost-btn:hover { background:rgba(255, 255, 255, 0.9); border-color:#B6B6B6; transform:translateY(-2px); }
+  .ghost-btn { 
+    background: rgba(255, 255, 255, 0.5); 
+    color: #1F2937; 
+    border: 1px solid #D1D1D1; 
+    padding: 0.75rem 2rem; 
+    border-radius: 10px; 
+    font-weight: 700; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 0.95rem; 
+    cursor: pointer; 
+    text-decoration: none; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 0.5rem; 
+    transition: all 0.2s; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+  }
+  .ghost-btn:hover { 
+    background: rgba(255, 255, 255, 0.9); 
+    border-color: #B6B6B6; 
+    transform: translateY(-2px); 
+  }
   
-  .filter-btn { padding:0.5rem 1.25rem; border-radius:100px; font-size:0.85rem; font-family:'Inter', sans-serif; font-weight:600; cursor:pointer; transition:all 0.2s; letter-spacing:0.01em; }
-  .filter-btn-active { background:#1F2937; color:#FFFFFF; border:1px solid #1F2937; }
-  .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
-  .filter-btn-inactive:hover { border-color:#9B9B9B; color:#111827; }
+  .filter-btn { 
+    padding: 0.5rem 1.25rem; 
+    border-radius: 100px; 
+    font-size: 0.85rem; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: all 0.2s; 
+    letter-spacing: 0.01em; 
+  }
+  .filter-btn-active { 
+    background: #1F2937; 
+    color: #FFFFFF; 
+    border: 1px solid #1F2937; 
+  }
+  .filter-btn-inactive { 
+    background: rgba(255,255,255,0.6); 
+    color: #4B5563; 
+    border: 1px solid #D1D1D1; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+  }
+  .filter-btn-inactive:hover { 
+    border-color: #9B9B9B; 
+    color: #111827; 
+  }
   
-  .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); WebkitBackdropFilter: blur(5px); }
-  .accent-chip { background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.2); color:#059669; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; }
-  .dynamic-chip { background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.2); color:#2563EB; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; animation: pulseGlow 2s infinite; }
+  .tech-chip { 
+    background: rgba(255,255,255,0.7); 
+    border: 1px solid #D1D1D1; 
+    color: #4B5563; 
+    font-size: 0.75rem; 
+    padding: 0.35rem 0.8rem; 
+    border-radius: 100px; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: 600; 
+    backdrop-filter: blur(5px); 
+    -webkit-backdrop-filter: blur(5px); 
+  }
+  .accent-chip { 
+    background: rgba(16, 185, 129, 0.1); 
+    border: 1px solid rgba(16, 185, 129, 0.2); 
+    color: #059669; 
+    font-size: 0.75rem; 
+    padding: 0.35rem 0.8rem; 
+    border-radius: 100px; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: 700; 
+  }
+  .dynamic-chip { 
+    background: rgba(59, 130, 246, 0.1); 
+    border: 1px solid rgba(59, 130, 246, 0.2); 
+    color: #2563EB; 
+    font-size: 0.75rem; 
+    padding: 0.35rem 0.8rem; 
+    border-radius: 100px; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: 700; 
+    animation: pulseGlow 2s infinite; 
+  }
   
-  @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+  @keyframes pulseGlow { 
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 
+    70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
+  }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  .search-bar { width: 100%; max-width: 600px; background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); border: 1px solid #D1D1D1; border-radius: 100px; padding: 1rem 1.5rem 1rem 3.5rem; color: #1F2937; font-family: 'Inter', sans-serif; font-size: 1.05rem; outline: none; transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-  .search-bar:focus { border-color: #B6B6B6; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); background: #FFFFFF; }
-  .search-icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #9B9B9B; }
+  .search-bar { 
+    width: 100%; 
+    max-width: 600px; 
+    background: rgba(255,255,255,0.7); 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    border: 1px solid #D1D1D1; 
+    border-radius: 100px; 
+    padding: 1rem 1.5rem 1rem 3.5rem; 
+    color: #1F2937; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 1.05rem; 
+    outline: none; 
+    transition: all 0.3s; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
+  }
+  .search-bar:focus { 
+    border-color: #B6B6B6; 
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.05); 
+    background: #FFFFFF; 
+  }
+  .search-icon { 
+    position: absolute; 
+    left: 1.25rem; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    color: #9B9B9B; 
+  }
 
   .carousel-container {
-    display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory;
-    scroll-behavior: smooth; padding: 1.5rem 1rem 3rem 1rem; margin: -1.5rem -1rem 0 -1rem; 
-    WebkitOverflowScrolling: touch;
+    display: flex; 
+    gap: 1.5rem; 
+    overflow-x: auto; 
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth; 
+    padding: 1.5rem 1rem 3rem 1rem; 
+    margin: -1.5rem -1rem 0 -1rem; 
+    -webkit-overflow-scrolling: touch;
   }
-  .carousel-card { scroll-snap-align: start; flex: 0 0 380px; display: flex; flex-direction: column; }
+  .carousel-card { 
+    scroll-snap-align: start; 
+    flex: 0 0 min(380px, 90vw); 
+    display: flex; 
+    flex-direction: column; 
+  }
   
-  .dropdown-container { position: relative; display: inline-block; }
-  .dropdown-content { position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px); background: rgba(255,255,255,0.95); min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid #D1D1D1; opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); padding: 0.5rem; z-index: 300; pointer-events: none; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
-  .dropdown-container:hover .dropdown-content { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-  .dropdown-item { display: block; padding: 0.75rem 1rem; color: #4B5563; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; border-radius: 8px; transition: background 0.2s, color 0.2s; text-align: left; width: 100%; border: none; background: transparent; cursor: pointer; }
-  .dropdown-item:hover { background: #E7E7E7; color: #111827; }
-
-  .toast-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 9999; pointer-events: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .toast { background: rgba(17, 24, 39, 0.95); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); color: white; padding: 0.85rem 1.75rem; border-radius: 100px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 0.6rem; animation: toastFade 3s ease-in-out forwards; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
-  @keyframes toastFade { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 10% { opacity: 1; transform: translateY(0) scale(1); } 90% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-20px) scale(0.9); } }
-
-  /* ============================================================
-     TRACKER WIDE SCREEN ALIGNMENT FIX
-     Locks the scroll line to the 1280px boundaries
-     ============================================================ */
-  .yscroll-fixed-bounds {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    max-width: 1280px; 
-    margin: 0 auto;
-    pointer-events: none;
-    z-index: 100;
+  .dropdown-container { 
+    position: relative; 
+    display: inline-block; 
   }
-
-  .yscroll-tracker-wrapper {
+  .dropdown-content { 
     position: absolute; 
-    top: 0; left: 0; bottom: 0; width: 140px; 
-    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-    transition: opacity 0.5s ease;
-    pointer-events: auto; /* Re-enable clicks */
+    top: 100%; 
+    left: 50%; 
+    transform: translateX(-50%) translateY(10px); 
+    background: rgba(255,255,255,0.95); 
+    min-width: 220px; 
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
+    border-radius: 12px; 
+    border: 1px solid #D1D1D1; 
+    opacity: 0; 
+    visibility: hidden; 
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); 
+    padding: 0.5rem; 
+    z-index: 300; 
+    pointer-events: none; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
   }
-  .yscroll-tracker-wrapper.hidden { opacity: 0; pointer-events: none; }
-  .yscroll-tracker-wrapper.visible { opacity: 1; pointer-events: auto; }
+  .dropdown-container:hover .dropdown-content { 
+    opacity: 1; 
+    visibility: visible; 
+    transform: translateX(-50%) translateY(0); 
+    pointer-events: auto; 
+  }
+  .dropdown-item { 
+    display: block; 
+    padding: 0.75rem 1rem; 
+    color: #4B5563; 
+    text-decoration: none; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    border-radius: 8px; 
+    transition: background 0.2s, color 0.2s; 
+    text-align: left; 
+    width: 100%; 
+    border: none; 
+    background: transparent; 
+    cursor: pointer; 
+  }
+  .dropdown-item:hover { 
+    background: #E7E7E7; 
+    color: #111827; 
+  }
+
+  .toast-container { 
+    position: fixed; 
+    bottom: 2rem; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 9999; 
+    pointer-events: none; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.5rem; 
+  }
+  .toast { 
+    background: rgba(17, 24, 39, 0.95); 
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); 
+    color: white; 
+    padding: 0.85rem 1.75rem; 
+    border-radius: 100px; 
+    font-family: 'Inter', sans-serif; 
+    font-weight: 600; 
+    font-size: 0.95rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.6rem; 
+    animation: toastFade 3s ease-in-out forwards; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+  }
+  @keyframes toastFade { 
+    0% { opacity: 0; transform: translateY(20px) scale(0.9); } 
+    10% { opacity: 1; transform: translateY(0) scale(1); } 
+    90% { opacity: 1; transform: translateY(0) scale(1); } 
+    100% { opacity: 0; transform: translateY(-20px) scale(0.9); } 
+  }
+
+  /* SCROLL TRACKER */
+  .yscroll-tracker-wrapper {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    bottom: 0; 
+    width: 140px; 
+    z-index: 100; 
+    pointer-events: none;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: flex-start;
+    transition: opacity 0.5s ease;
+  }
+  .yscroll-tracker-wrapper.hidden { 
+    opacity: 0; 
+    pointer-events: none; 
+  }
+  .yscroll-tracker-wrapper.visible { 
+    opacity: 1; 
+  }
 
   .yscroll-track {
-    position: relative; height: 60vh; width: 100%;
-    display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
+    position: relative; 
+    height: 60vh; 
+    width: 100%;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    align-items: flex-start;
   }
   
   .yscroll-line-bounds {
-    position: absolute; left: 39px; top: 12px; bottom: 12px; width: 2px;
+    position: absolute; 
+    left: 39px; 
+    top: 12px; 
+    bottom: 12px; 
+    width: 2px;
     z-index: 0;
   }
+  
   .yscroll-line-bg {
-    position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
+    position: absolute; 
+    inset: 0; 
+    background: rgba(209, 209, 209, 0.4); 
   }
+  
   .yscroll-line-fill {
-    position: absolute; top: 0; left: 0; width: 100%; 
-    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    background: #10B981;
     transition: height 0.1s linear;
   }
   
   .yscroll-node {
-    position: relative; display: flex; align-items: center; gap: 16px;
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    gap: 16px;
     padding-left: 35px; 
-    pointer-events: auto; cursor: pointer; z-index: 2; height: 24px; width: 100%;
+    pointer-events: auto; 
+    cursor: pointer; 
+    z-index: 2; 
+    height: 24px; 
+    width: 100%;
   }
   
   .yscroll-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: #E7E7E7; border: 2px solid #B6B6B6;
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%;
+    background: #E7E7E7; 
+    border: 2px solid #B6B6B6;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    flex-shrink: 0; opacity: 0; transform: scale(0.5); 
+    flex-shrink: 0; 
+    opacity: 0; 
+    transform: scale(0.5); 
   }
-  .yscroll-node.is-adjacent .yscroll-dot { opacity: 0.5; transform: scale(1); }
+  .yscroll-node.is-adjacent .yscroll-dot { 
+    opacity: 0.5; 
+    transform: scale(1); 
+  }
   .yscroll-node.is-active .yscroll-dot {
-    opacity: 1; background: #10B981; border-color: #10B981; 
-    transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    opacity: 1; 
+    background: #10B981; 
+    border-color: #10B981; 
+    transform: scale(1.6); 
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
   }
   
   .yscroll-label {
-    font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 700;
-    color: #9B9B9B; text-transform: uppercase; letter-spacing: 0.1em;
+    font-family: 'Outfit', sans-serif; 
+    font-size: 0.75rem; 
+    font-weight: 700;
+    color: #9B9B9B; 
+    text-transform: uppercase; 
+    letter-spacing: 0.1em;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     transform-origin: left center; 
     transform: translateX(-15px) scale(0.8); 
     opacity: 0; 
-    pointer-events: none; white-space: nowrap;
+    pointer-events: none; 
+    white-space: nowrap;
   }
   .yscroll-node.is-adjacent .yscroll-label {
-    opacity: 0.4; transform: translateX(-5px) scale(0.95);
+    opacity: 0.4; 
+    transform: translateX(-5px) scale(0.95);
   }
   .yscroll-node.is-active .yscroll-label {
-    opacity: 1; color: #10B981; font-weight: 900; 
+    opacity: 1; 
+    color: #10B981; 
+    font-weight: 900; 
     transform: translateX(0) scale(1.25);
   }
 
+  /* RESPONSIVE BREAKPOINTS */
   @media (max-width: 1024px) { 
-    .desktop-nav { display:none!important; } 
-    .yscroll-tracker-wrapper { display: none; } 
-    .hero-container { flex-direction: column-reverse; text-align: center; gap: 3rem !important; }
-    .hero-text { align-items: center; }
-    .hero-badges-wrapper { position: static!important; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; transform: none!important; }
+    .desktop-nav { display: none !important; } 
+    .yscroll-tracker-wrapper { display: none !important; } 
+    .hero-container { 
+      flex-direction: column-reverse !important; 
+      text-align: center !important; 
+      gap: 3rem !important; 
+    }
+    .hero-text { 
+      align-items: center !important; 
+    }
+    .hero-badges-wrapper { 
+      position: static !important; 
+      display: flex !important; 
+      flex-direction: column !important; 
+      gap: 1rem !important; 
+      align-items: center !important; 
+      margin-top: 2rem !important; 
+      transform: none !important; 
+    }
+    .hero-badges-wrapper .solid-badge {
+      margin-left: 0 !important;
+    }
+    .main-wrapper {
+      padding-left: 0 !important;
+    }
   }
+  
   @media (min-width: 1025px) { 
-    .mobile-menu-btn { display:none!important; } 
-    .hero-container { flex-direction: row; justify-content: space-between; align-items: center; }
-    .hero-text { max-width: 600px; text-align: left; align-items: flex-start; }
+    .mobile-menu-btn { display: none !important; } 
+    .hero-container { 
+      flex-direction: row !important; 
+      justify-content: space-between !important; 
+      align-items: center !important; 
+    }
+    .hero-text { 
+      max-width: 600px !important; 
+      text-align: left !important; 
+      align-items: flex-start !important; 
+    }
+  }
+
+  /* MOBILE OPTIMIZATIONS */
+  @media (max-width: 640px) {
+    .carousel-card {
+      flex: 0 0 85vw !important;
+    }
+    .toast {
+      font-size: 0.85rem !important;
+      padding: 0.75rem 1.25rem !important;
+    }
   }
 `;
 
@@ -348,28 +673,63 @@ const Accent = "#10B981";
 const TextMain = "#111827"; 
 
 const H = ({ children, style = {} }) => (
-  <h2 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontSize: "clamp(2.2rem,4vw,3.2rem)", fontWeight: 800, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: "0.75rem", ...style }}>{children}</h2>
+  <h2 style={{ 
+    fontFamily: "'Outfit', sans-serif", 
+    color: TextMain, 
+    fontSize: "clamp(2.2rem, 4vw, 3.2rem)", 
+    fontWeight: 800, 
+    letterSpacing: "-0.03em", 
+    lineHeight: 1.1, 
+    marginBottom: "0.75rem", 
+    ...style 
+  }}>{children}</h2>
 );
+
 const Label = ({ children }) => (
-  <p style={{ fontFamily: "'Inter', sans-serif", color: Accent, fontSize: "0.85rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: "0.75rem" }}>{children}</p>
+  <p style={{ 
+    fontFamily: "'Inter', sans-serif", 
+    color: Accent, 
+    fontSize: "0.85rem", 
+    fontWeight: 800, 
+    letterSpacing: "0.15em", 
+    textTransform: "uppercase", 
+    marginBottom: "0.75rem" 
+  }}>{children}</p>
 );
+
 const Body = ({ children, style = {} }) => (
-  <p style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", lineHeight: 1.7, fontSize: "1.05rem", ...style }}>{children}</p>
+  <p style={{ 
+    fontFamily: "'Inter', sans-serif", 
+    color: "#4B5563", 
+    lineHeight: 1.7, 
+    fontSize: "1.05rem", 
+    ...style 
+  }}>{children}</p>
 );
 
 const iconBox = (color = Accent) => ({
-  width: 56, height: 56, borderRadius: 14,
-  background: `${color}15`, color: color,
-  display: "flex", alignItems: "center", justifyContent: "center",
+  width: 56, 
+  height: 56, 
+  borderRadius: 14,
+  background: `${color}15`, 
+  color: color,
+  display: "flex", 
+  alignItems: "center", 
+  justifyContent: "center",
   flexShrink: 0,
 });
 
-/* INTERSECTION OBSERVER SCROLL ANIMATION WRAPPER */
+/* ============================================================
+   INTERSECTION OBSERVER SCROLL ANIMATION WRAPPER
+   ============================================================ */
 function FadeSection({ children, id, style = {} }) {
-  const domRef = useRef();
+  const domRef = useRef(null);
   const [isVisible, setVisible] = useState(false);
 
   useEffect(() => {
+    const current = domRef.current;
+    if (!current) return;
+
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => { 
         if (entry.isIntersecting) {
@@ -379,24 +739,33 @@ function FadeSection({ children, id, style = {} }) {
       });
     }, { threshold: 0.15 });
     
-    const current = domRef.current;
-    if (current) observer.observe(current);
+    observer.observe(current);
     
-    return () => { if (current) observer.unobserve(current); };
+    return () => { 
+      if (current) observer.unobserve(current); 
+    };
   }, []);
 
   return (
-    <section id={id} ref={domRef} className={`fade-section ${isVisible ? 'is-visible' : ''}`} style={style}>
+    <section 
+      id={id} 
+      ref={domRef} 
+      className={`fade-section ${isVisible ? 'is-visible' : ''}`} 
+      style={style}
+    >
       {children}
     </section>
   );
 }
 
+/* ============================================================
+   TOAST COMPONENT
+   ============================================================ */
 function Toast() {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
-    const t = setTimeout(() => setVisible(false), 2800);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setVisible(false), 2800);
+    return () => clearTimeout(timer);
   }, []);
   if (!visible) return null;
   return (
@@ -407,7 +776,7 @@ function Toast() {
 }
 
 /* ============================================================
-   CREATIVE CAMERA ZOOM SCROLL TRACKER
+   SCROLL TRACKER
    ============================================================ */
 function YScrollTracker() {
   const [activeSection, setActiveSection] = useState("");
@@ -420,14 +789,12 @@ function YScrollTracker() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // 1. Hide tracker ONLY on Hero Section
       if (window.scrollY > window.innerHeight * 0.5) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
 
-      // 2. Math-based active section logic
       const triggerOffset = window.innerHeight * 0.4; 
       const triggerLine = window.scrollY + triggerOffset; 
       let current = "";
@@ -448,13 +815,12 @@ function YScrollTracker() {
       }
       setActiveSection(current);
 
-      // 3. Precise Progress Fill calculation
       const firstEl = document.getElementById(trackSections[0]);
       const lastEl = document.getElementById(trackSections[trackSections.length - 1]);
       
       if (firstEl && lastEl && trackerRef.current) {
-        const start = firstEl.offsetTop - (window.innerHeight * 0.4);
-        const end = lastEl.offsetTop - (window.innerHeight * 0.4);
+        const start = firstEl.offsetTop - triggerOffset;
+        const end = lastEl.offsetTop - triggerOffset;
         const totalDistance = end - start;
         const currentDistance = Math.max(0, window.scrollY - start);
         
@@ -464,66 +830,76 @@ function YScrollTracker() {
         }
         setProgressHeight(Math.min(100, Math.max(0, progress)));
 
-        // 4. THE PHYSICAL LOCK (Avoid Footer Overlap)
         if (window.scrollY > end) {
-            const overscroll = window.scrollY - end;
-            trackerRef.current.style.transform = `translateY(-${overscroll}px)`;
+          const overscroll = window.scrollY - end;
+          trackerRef.current.style.transform = `translateY(-${overscroll}px)`;
         } else {
-            trackerRef.current.style.transform = `translateY(0px)`;
+          trackerRef.current.style.transform = `translateY(0px)`;
         }
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id) => {
+  const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id);
-    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
-  };
+    if (el) {
+      window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
+    }
+  }, []);
 
   const activeIndex = trackSections.indexOf(activeSection);
 
   return (
-    <div className="yscroll-fixed-bounds">
-      <div className={`yscroll-tracker-wrapper ${isVisible ? 'visible' : 'hidden'}`} ref={trackerRef}>
-        <div className="yscroll-track">
-          
-          <div className="yscroll-line-bounds">
-              <div className="yscroll-line-bg"></div>
-              <div className="yscroll-line-fill" style={{ height: `${progressHeight}%` }}></div>
-          </div>
-          
-          {trackSections.map((id, index) => {
-            const isActive = index === activeIndex;
-            const isAdjacent = Math.abs(index - activeIndex) === 1;
-            
-            let nodeClass = "yscroll-node";
-            if (isActive) nodeClass += " is-active";
-            else if (isAdjacent) nodeClass += " is-adjacent";
-
-            return (
-              <div key={id} className={nodeClass} onClick={() => scrollToSection(id)}>
-                <div className="yscroll-dot"></div>
-                <span className="yscroll-label">{trackLabels[index]}</span>
-              </div>
-            );
-          })}
+    <div className={`yscroll-tracker-wrapper ${isVisible ? 'visible' : 'hidden'}`} ref={trackerRef}>
+      <div className="yscroll-track">
+        <div className="yscroll-line-bounds">
+          <div className="yscroll-line-bg"></div>
+          <div className="yscroll-line-fill" style={{ height: `${progressHeight}%` }}></div>
         </div>
+        
+        {trackSections.map((id, index) => {
+          const isActive = index === activeIndex;
+          const isAdjacent = Math.abs(index - activeIndex) === 1;
+          
+          let nodeClass = "yscroll-node";
+          if (isActive) nodeClass += " is-active";
+          else if (isAdjacent) nodeClass += " is-adjacent";
+
+          return (
+            <div 
+              key={id} 
+              className={nodeClass} 
+              onClick={() => scrollToSection(id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  scrollToSection(id);
+                }
+              }}
+            >
+              <div className="yscroll-dot"></div>
+              <span className="yscroll-label">{trackLabels[index]}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 /* ============================================================
-   NAV Component
+   NAVIGATION
    ============================================================ */
 function Nav({ currentView, navigateToHome }) {
   const [open, setOpen] = useState(false);
   
-  const handleScroll = (e, id) => {
+  const handleScroll = useCallback((e, id) => {
     e.preventDefault();
     setOpen(false);
     if (currentView !== "home") {
@@ -538,16 +914,62 @@ function Nav({ currentView, navigateToHome }) {
     if (element) {
       window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
     }
+  }, [currentView, navigateToHome]);
+
+  const navStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 200,
+    background: "rgba(255,255,255,0.65)",
+    backdropFilter: "saturate(180%) blur(24px)",
+    WebkitBackdropFilter: "saturate(180%) blur(24px)",
+    borderBottom: "1px solid rgba(209, 209, 209, 0.5)",
+    transition: "all 0.3s"
+  };
+
+  const buttonBaseStyle = {
+    background: "transparent",
+    border: "none",
+    cursor: "pointer"
   };
 
   return (
-    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(255,255,255,0.65)", backdropFilter: "saturate(180%) blur(24px)", WebkitBackdropFilter: "saturate(180%) blur(24px)", borderBottom: "1px solid rgba(209, 209, 209, 0.5)", transition: "all 0.3s" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
-        
+    <nav style={navStyle}>
+      <div className="content-container" style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        height: 72 
+      }}>
         {currentView === "home" ? (
-          <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
+          <button 
+            onClick={(e) => handleScroll(e, 'hero')} 
+            style={{
+              ...buttonBaseStyle,
+              fontFamily: "'Outfit', sans-serif",
+              color: TextMain,
+              fontWeight: 900,
+              fontSize: "1.4rem",
+              letterSpacing: "-0.02em"
+            }}
+          >
+            R.M.L.K.
+          </button>
         ) : (
-          <button onClick={navigateToHome} style={{ background: "transparent", border: "none", color: TextMain, display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Inter', sans-serif", fontWeight: 700, cursor: "pointer" }}>
+          <button 
+            onClick={navigateToHome} 
+            style={{
+              ...buttonBaseStyle,
+              color: TextMain,
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 700
+            }}
+          >
             <ArrowLeft size={18} color={Accent} /> Back
           </button>
         )}
@@ -558,11 +980,22 @@ function Nav({ currentView, navigateToHome }) {
             <button onClick={(e) => handleScroll(e, 'services')} className="nav-link">Services</button>
             
             <div className="dropdown-container">
-              <button onClick={(e) => handleScroll(e, 'projects')} className="nav-link">
+              <button 
+                onClick={(e) => handleScroll(e, 'projects')} 
+                className="nav-link"
+              >
                 Projects <ChevronDown size={14} />
               </button>
               <div className="dropdown-content">
-                <button onClick={() => { document.getElementById('btn-lib').click(); }} className="dropdown-item">Comprehensive Library</button>
+                <button 
+                  onClick={() => { 
+                    const btn = document.getElementById('btn-lib');
+                    if (btn) btn.click(); 
+                  }} 
+                  className="dropdown-item"
+                >
+                  Comprehensive Library
+                </button>
               </div>
             </div>
 
@@ -572,9 +1005,26 @@ function Nav({ currentView, navigateToHome }) {
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          {currentView === "home" && <button onClick={(e) => handleScroll(e, 'hireme')} className="accent-btn desktop-nav" style={{ padding: "0.5rem 1.4rem" }}>Hire Me</button>}
           {currentView === "home" && (
-            <button className="mobile-menu-btn" onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: TextMain, cursor: "pointer", padding: "0.25rem" }}>
+            <button 
+              onClick={(e) => handleScroll(e, 'hireme')} 
+              className="accent-btn desktop-nav" 
+              style={{ padding: "0.5rem 1.4rem" }}
+            >
+              Hire Me
+            </button>
+          )}
+          {currentView === "home" && (
+            <button 
+              className="mobile-menu-btn" 
+              onClick={() => setOpen(!open)} 
+              style={{
+                ...buttonBaseStyle,
+                color: TextMain,
+                padding: "0.25rem"
+              }}
+              aria-label={open ? "Close menu" : "Open menu"}
+            >
               {open ? <X size={24} /> : <Menu size={24} />}
             </button>
           )}
@@ -582,12 +1032,44 @@ function Nav({ currentView, navigateToHome }) {
       </div>
 
       {open && currentView === "home" && (
-        <div style={{ padding: "1.5rem", borderTop: "1px solid #D1D1D1", display: "flex", flexDirection: "column", gap: "1.25rem", background: "rgba(255,255,255,0.95)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}>
+        <div style={{ 
+          padding: "1.5rem", 
+          borderTop: "1px solid #D1D1D1", 
+          display: "flex", 
+          flexDirection: "column", 
+          gap: "1.25rem", 
+          background: "rgba(255,255,255,0.95)", 
+          backdropFilter: "blur(20px)", 
+          WebkitBackdropFilter: "blur(20px)" 
+        }}>
           {["About", "Services", "Projects", "Research", "Leadership"].map(label => (
-            <button key={label} onClick={(e) => handleScroll(e, label.toLowerCase())} className="nav-link" style={{ fontSize: "1.1rem" }}>{label}</button>
+            <button 
+              key={label} 
+              onClick={(e) => handleScroll(e, label.toLowerCase())} 
+              className="nav-link" 
+              style={{ fontSize: "1.1rem" }}
+            >
+              {label}
+            </button>
           ))}
-          <button onClick={() => { setOpen(false); document.getElementById('btn-lib').click(); }} className="nav-link" style={{ color: Accent }}>↳ Full Project Library</button>
-          <button onClick={(e) => handleScroll(e, 'hireme')} className="accent-btn" style={{ justifyContent: "center", marginTop: "1rem" }}>Hire Me</button>
+          <button 
+            onClick={() => { 
+              setOpen(false); 
+              const btn = document.getElementById('btn-lib');
+              if (btn) btn.click();
+            }} 
+            className="nav-link" 
+            style={{ color: Accent }}
+          >
+            ↳ Full Project Library
+          </button>
+          <button 
+            onClick={(e) => handleScroll(e, 'hireme')} 
+            className="accent-btn" 
+            style={{ justifyContent: "center", marginTop: "1rem" }}
+          >
+            Hire Me
+          </button>
         </div>
       )}
     </nav>
@@ -595,99 +1077,300 @@ function Nav({ currentView, navigateToHome }) {
 }
 
 /* ============================================================
-   HERO 
+   HERO SECTION
    ============================================================ */
 function Hero({ copyEmail, navigateToLibrary }) {
-  const handleScroll = (e, id) => {
+  const handleScroll = useCallback((e, id) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
       window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
     }
+  }, []);
+
+  const badgeStyle = {
+    padding: "0.85rem 1.25rem", 
+    display: "flex", 
+    alignItems: "center", 
+    gap: "1rem"
   };
 
   return (
-    <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
+    <FadeSection id="hero" style={{ 
+      minHeight: "100vh", 
+      display: "flex", 
+      alignItems: "center", 
+      paddingTop: 80, 
+      paddingBottom: "4rem" 
+    }}>
+      <div className="content-container" style={{ width: "100%" }}>
         <div className="hero-container" style={{ display: "flex", gap: "4rem" }}>
-          
-          <div className="hero-text" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: 100, padding: "0.4rem 1.25rem", marginBottom: "2rem", alignSelf: "flex-start" }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: Accent, animation: "pulse 2s infinite" }} />
-              <span style={{ fontFamily: "'Inter', sans-serif", color: "#10B981", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" }}>{PERSONAL.status}</span>
+          <div className="hero-text" style={{ 
+            flex: 1, 
+            display: "flex", 
+            flexDirection: "column", 
+            justifyContent: "center" 
+          }}>
+            <div style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              gap: "0.5rem", 
+              background: "rgba(16, 185, 129, 0.1)", 
+              border: "1px solid rgba(16, 185, 129, 0.2)", 
+              borderRadius: 100, 
+              padding: "0.4rem 1.25rem", 
+              marginBottom: "2rem", 
+              alignSelf: "flex-start" 
+            }}>
+              <span style={{ 
+                width: 8, 
+                height: 8, 
+                borderRadius: "50%", 
+                background: Accent, 
+                animation: "pulse 2s infinite" 
+              }} />
+              <span style={{ 
+                fontFamily: "'Inter', sans-serif", 
+                color: "#10B981", 
+                fontSize: "0.85rem", 
+                fontWeight: 700, 
+                letterSpacing: "0.05em" 
+              }}>
+                {PERSONAL.status}
+              </span>
             </div>
 
-            <h1 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontSize: "clamp(2.8rem, 6vw, 5rem)", fontWeight: 900, lineHeight: 1.1, marginBottom: "1rem", letterSpacing: "-0.03em" }}>
+            <h1 style={{ 
+              fontFamily: "'Outfit', sans-serif", 
+              color: TextMain, 
+              fontSize: "clamp(2.8rem, 6vw, 5rem)", 
+              fontWeight: 900, 
+              lineHeight: 1.1, 
+              marginBottom: "1rem", 
+              letterSpacing: "-0.03em" 
+            }}>
               Hi, I'm Lochana.
             </h1>
-            <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)", fontWeight: 500, marginBottom: "1.5rem", letterSpacing: "-0.01em" }}>
+            <p style={{ 
+              fontFamily: "'Inter', sans-serif", 
+              color: "#9B9B9B", 
+              fontSize: "clamp(1.2rem, 2.5vw, 1.8rem)", 
+              fontWeight: 500, 
+              marginBottom: "1.5rem", 
+              letterSpacing: "-0.01em" 
+            }}>
               {PERSONAL.title}
             </p>
             
-            <Body style={{ fontSize: "1.1rem", marginBottom: "2.5rem", maxWidth: 540 }}>{PERSONAL.pitch}</Body>
+            <Body style={{ fontSize: "1.1rem", marginBottom: "2.5rem", maxWidth: 540 }}>
+              {PERSONAL.pitch}
+            </Body>
 
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "3rem" }}>
-              <button onClick={(e) => handleScroll(e, 'projects')} className="accent-btn">View Projects <ArrowRight size={18} /></button>
-              <button id="btn-lib" onClick={navigateToLibrary} className="ghost-btn">Full Library</button>
+              <button onClick={(e) => handleScroll(e, 'projects')} className="accent-btn">
+                View Projects <ArrowRight size={18} />
+              </button>
+              <button id="btn-lib" onClick={navigateToLibrary} className="ghost-btn">
+                Full Library
+              </button>
             </div>
 
             <div style={{ display: "flex", gap: "1.25rem", alignItems: "center", flexWrap: "wrap" }}>
-              {[{ href: PERSONAL.linkedin, Icon: Linkedin }, { href: PERSONAL.github, Icon: Github }, { href: PERSONAL.fiverr, Icon: Fiverr }].map(({ href, Icon }, i) => (
-                <a key={i} href={href} target="_blank" style={{ color: "#B6B6B6", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#B6B6B6"}>
+              {[
+                { href: PERSONAL.linkedin, Icon: Linkedin }, 
+                { href: PERSONAL.github, Icon: Github }, 
+                { href: PERSONAL.fiverr, Icon: Fiverr }
+              ].map(({ href, Icon }, i) => (
+                <a 
+                  key={i} 
+                  href={href} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: "#B6B6B6", transition: "color 0.2s" }} 
+                  onMouseEnter={e => e.currentTarget.style.color = TextMain} 
+                  onMouseLeave={e => e.currentTarget.style.color = "#B6B6B6"}
+                >
                   <Icon size={22} />
                 </a>
               ))}
               <div style={{ width: 1, height: 24, background: "#D1D1D1" }} />
-              <button onClick={copyEmail} style={{ background: "none", border: "none", display: "flex", alignItems: "center", gap: "0.5rem", color: "#9B9B9B", fontSize: "0.95rem", fontFamily: "'Inter', sans-serif", fontWeight: 600, cursor: "pointer", padding: 0 }}
-                onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}
-              ><Mail size={18} /> rmlkkalhara@gmail.com</button>
+              <button 
+                onClick={copyEmail} 
+                style={{
+                  background: "none",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  color: "#9B9B9B",
+                  fontSize: "0.95rem",
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  padding: 0
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = TextMain} 
+                onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}
+              >
+                <Mail size={18} /> rmlkkalhara@gmail.com
+              </button>
             </div>
           </div>
 
-          <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", minHeight: "450px" }}>
-            <div style={{ position: "relative", width: "100%", maxWidth: "420px", aspectRatio: "1/1" }}>
+          <div style={{ 
+            flex: 1, 
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center", 
+            position: "relative", 
+            minHeight: "450px" 
+          }}>
+            <div style={{ 
+              position: "relative", 
+              width: "100%", 
+              maxWidth: "420px", 
+              aspectRatio: "1/1" 
+            }}>
+              <div style={{ 
+                position: "absolute", 
+                inset: "-10%", 
+                border: "2px solid #D1D1D1", 
+                borderRadius: "50%", 
+                pointerEvents: "none" 
+              }} />
+              <div style={{ 
+                position: "absolute", 
+                inset: "-5%", 
+                border: "1px dashed #B6B6B6", 
+                borderRadius: "50%", 
+                animation: "spin 30s linear infinite", 
+                pointerEvents: "none" 
+              }} />
               
-              <div style={{ position: "absolute", inset: "-10%", border: "2px solid #D1D1D1", borderRadius: "50%", pointerEvents: "none" }} />
-              <div style={{ position: "absolute", inset: "-5%", border: "1px dashed #B6B6B6", borderRadius: "50%", animation: "spin 30s linear infinite", pointerEvents: "none" }} />
-              <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
-              
-              <div style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden", background: "#E7E7E7", border: "8px solid #FFFFFF", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.1)", zIndex: 5 }}>
-                <img src="/profile.jpg" alt="R.M Lochana Kalhara Ranathunga" style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 1, position: "relative" }} 
-                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} 
+              <div style={{ 
+                position: "absolute", 
+                inset: 0, 
+                borderRadius: "50%", 
+                overflow: "hidden", 
+                background: "#E7E7E7", 
+                border: "8px solid #FFFFFF", 
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.1)", 
+                zIndex: 5 
+              }}>
+                <img 
+                  src="/profile.jpg" 
+                  alt="R.M Lochana Kalhara Ranathunga" 
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "cover", 
+                    zIndex: 1, 
+                    position: "relative" 
+                  }} 
+                  onError={(e) => { 
+                    e.target.style.display = 'none'; 
+                    e.target.nextSibling.style.display = 'flex'; 
+                  }} 
                 />
-                <div style={{ display: "none", width: "100%", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", color: "#9B9B9B", padding: "2rem", textAlign: "center" }}>
+                <div style={{ 
+                  display: "none", 
+                  width: "100%", 
+                  height: "100%", 
+                  alignItems: "center", 
+                  justifyContent: "center", 
+                  flexDirection: "column", 
+                  color: "#9B9B9B", 
+                  padding: "2rem", 
+                  textAlign: "center" 
+                }}>
                   <Code size={48} style={{ marginBottom: "1rem", opacity: 0.5 }} />
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: "0.85rem", fontWeight: 500 }}>Add <b>profile.jpg</b> to<br/>your public folder.</p>
+                  <p style={{ 
+                    fontFamily: "'Inter', sans-serif", 
+                    fontSize: "0.85rem", 
+                    fontWeight: 500 
+                  }}>
+                    Add <b>profile.jpg</b> to<br/>your public folder.
+                  </p>
                 </div>
               </div>
               
-              {/* SOLID WHITE STACKED BADGES */}
-              <div className="hero-badges-wrapper" style={{ position: "absolute", bottom: "12%", right: "-20%", zIndex: 10, display: "flex", flexDirection: "column", gap: "1rem" }}>
-                
-                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div className="hero-badges-wrapper" style={{ 
+                position: "absolute", 
+                bottom: "12%", 
+                right: "-20%", 
+                zIndex: 10, 
+                display: "flex", 
+                flexDirection: "column", 
+                gap: "1rem" 
+              }}>
+                <div className="solid-badge" style={badgeStyle}>
+                  <div style={{ 
+                    width: 36, 
+                    height: 36, 
+                    borderRadius: "50%", 
+                    background: "rgba(16, 185, 129, 0.1)", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center" 
+                  }}>
                     <TrendingUp size={18} color={Accent} />
                   </div>
                   <div>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: "0.9rem", color: TextMain, lineHeight: 1.1 }}>Data Science</p>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.75rem", color: "#9B9B9B" }}>Specialization</p>
+                    <p style={{ 
+                      fontFamily: "'Inter', sans-serif", 
+                      fontWeight: 800, 
+                      fontSize: "0.9rem", 
+                      color: TextMain, 
+                      lineHeight: 1.1 
+                    }}>
+                      Data Science
+                    </p>
+                    <p style={{ 
+                      fontFamily: "'Inter', sans-serif", 
+                      fontWeight: 600, 
+                      fontSize: "0.75rem", 
+                      color: "#9B9B9B" 
+                    }}>
+                      Specialization
+                    </p>
                   </div>
                 </div>
 
-                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", marginLeft: "1.5rem" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div className="solid-badge" style={{ ...badgeStyle, marginLeft: "1.5rem" }}>
+                  <div style={{ 
+                    width: 36, 
+                    height: 36, 
+                    borderRadius: "50%", 
+                    background: "rgba(16, 185, 129, 0.1)", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center" 
+                  }}>
                     <Database size={18} color={Accent} />
                   </div>
                   <div>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: "0.9rem", color: TextMain, lineHeight: 1.1 }}>Machine Learning</p>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "0.75rem", color: "#9B9B9B" }}>Specialization</p>
+                    <p style={{ 
+                      fontFamily: "'Inter', sans-serif", 
+                      fontWeight: 800, 
+                      fontSize: "0.9rem", 
+                      color: TextMain, 
+                      lineHeight: 1.1 
+                    }}>
+                      Machine Learning
+                    </p>
+                    <p style={{ 
+                      fontFamily: "'Inter', sans-serif", 
+                      fontWeight: 600, 
+                      fontSize: "0.75rem", 
+                      color: "#9B9B9B" 
+                    }}>
+                      Specialization
+                    </p>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
-          
         </div>
       </div>
     </FadeSection>
@@ -703,55 +1386,126 @@ function About() {
   const dynamicNewSkills = [...new Set(allProjectTech)].filter(tech => !hardcodedSkillsFlat.includes(tech.toLowerCase()));
 
   return (
-    <FadeSection id="about" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
-        
-        <div>
-          <Label>About</Label>
-          <H>The Engineer</H>
-          <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
-          <Body style={{ fontSize: "1.05rem" }}>{PERSONAL.about}</Body>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginTop: "2.5rem" }}>
-            <div className="glass-card" style={{ padding: "1.5rem" }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "1.25rem" }}>NSBM</p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, color: "#9B9B9B", fontSize: "0.85rem" }}>Green University (Class of 2027)</p>
+    <FadeSection id="about" style={{ padding: "clamp(3rem, 8vh, 6rem) 0" }}>
+      <div className="content-container">
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
+          gap: "clamp(2rem, 5vw, 4rem)" 
+        }}>
+          <div>
+            <Label>About</Label>
+            <H>The Engineer</H>
+            <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
+            <Body style={{ fontSize: "1.05rem" }}>{PERSONAL.about}</Body>
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "1fr 1fr", 
+              gap: "1.5rem", 
+              marginTop: "2.5rem" 
+            }}>
+              <div className="glass-card" style={{ padding: "1.5rem" }}>
+                <p style={{ 
+                  fontFamily: "'Inter', sans-serif", 
+                  fontWeight: 700, 
+                  color: TextMain, 
+                  fontSize: "1.25rem" 
+                }}>
+                  NSBM
+                </p>
+                <p style={{ 
+                  fontFamily: "'Inter', sans-serif", 
+                  fontWeight: 500, 
+                  color: "#9B9B9B", 
+                  fontSize: "0.85rem" 
+                }}>
+                  Green University (Class of 2027)
+                </p>
+              </div>
+              <div className="glass-card" style={{ padding: "1.5rem" }}>
+                <p style={{ 
+                  fontFamily: "'Inter', sans-serif", 
+                  fontWeight: 700, 
+                  color: TextMain, 
+                  fontSize: "1.25rem" 
+                }}>
+                  Sri Lanka
+                </p>
+                <p style={{ 
+                  fontFamily: "'Inter', sans-serif", 
+                  fontWeight: 500, 
+                  color: "#9B9B9B", 
+                  fontSize: "0.85rem" 
+                }}>
+                  Pitipana, Homagama
+                </p>
+              </div>
             </div>
-            <div className="glass-card" style={{ padding: "1.5rem" }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "1.25rem" }}>Sri Lanka</p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, color: "#9B9B9B", fontSize: "0.85rem" }}>Pitipana, Homagama</p>
+          </div>
+
+          <div className="glass-card" style={{ padding: "2.5rem" }}>
+            <Label>Architecture</Label>
+            <H>Technical Stack</H>
+            <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+              {BASE_SKILLS.map(category => (
+                <div key={category.category}>
+                  <p style={{ 
+                    fontFamily: "'Inter', sans-serif", 
+                    fontWeight: 700, 
+                    color: TextMain, 
+                    fontSize: "0.9rem", 
+                    marginBottom: "0.75rem", 
+                    textTransform: "uppercase", 
+                    letterSpacing: "0.05em" 
+                  }}>
+                    {category.category}
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                    {category.items.map(item => (
+                      <span key={item} className="tech-chip">{item}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {dynamicNewSkills.length > 0 && (
+                <div style={{ 
+                  marginTop: "1rem", 
+                  padding: "1.5rem", 
+                  background: "rgba(59, 130, 246, 0.03)", 
+                  borderRadius: "12px", 
+                  border: "1px dashed rgba(59, 130, 246, 0.3)" 
+                }}>
+                  <div style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "0.5rem", 
+                    marginBottom: "1rem" 
+                  }}>
+                    <Zap size={16} color="#3B82F6" />
+                    <p style={{ 
+                      fontFamily: "'Inter', sans-serif", 
+                      fontWeight: 700, 
+                      color: "#3B82F6", 
+                      fontSize: "0.85rem", 
+                      textTransform: "uppercase", 
+                      letterSpacing: "0.05em" 
+                    }}>
+                      Dynamically Extracted from Projects
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                    {dynamicNewSkills.map(item => (
+                      <span key={item} className="dynamic-chip">{item}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        <div className="glass-card" style={{ padding: "2.5rem" }}>
-          <Label>Architecture</Label>
-          <H>Technical Stack</H>
-          <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {BASE_SKILLS.map(category => (
-              <div key={category.category}>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "0.9rem", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>{category.category}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                  {category.items.map(item => <span key={item} className="tech-chip">{item}</span>)}
-                </div>
-              </div>
-            ))}
-
-            {dynamicNewSkills.length > 0 && (
-              <div style={{ marginTop: "1rem", padding: "1.5rem", background: "rgba(59, 130, 246, 0.03)", borderRadius: "12px", border: "1px dashed rgba(59, 130, 246, 0.3)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
-                  <Zap size={16} color="#3B82F6" />
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: "#3B82F6", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Dynamically Extracted from Projects</p>
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                  {dynamicNewSkills.map(item => <span key={item} className="dynamic-chip">{item}</span>)}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        
       </div>
     </FadeSection>
   );
@@ -762,21 +1516,50 @@ function About() {
    ============================================================ */
 function Services() {
   return (
-    <FadeSection id="services" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ textAlign: "center", marginBottom: "4rem" }}>
-        <Label>Specialization</Label>
-        <H>Services & Architecture</H>
-        <Body style={{ margin: "0 auto", maxWidth: 600 }}>End-to-end data engineering and intelligent AI systems designed to solve structural business bottlenecks.</Body>
-      </div>
-      
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "2rem" }}>
-        {SERVICES.map(s => (
-          <div key={s.id} className="glass-card glass-card-hover" style={{ padding: "3rem 2.5rem", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-            <div style={{ ...iconBox(s.accent), marginBottom: "1.5rem" }}><s.Icon size={28} /></div>
-            <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.4rem", marginBottom: "1rem", letterSpacing: "-0.01em" }}>{s.title}</p>
-            <Body style={{ fontSize: "0.95rem" }}>{s.desc}</Body>
-          </div>
-        ))}
+    <FadeSection id="services" style={{ padding: "clamp(3rem, 8vh, 6rem) 0" }}>
+      <div className="content-container">
+        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
+          <Label>Specialization</Label>
+          <H>Services & Architecture</H>
+          <Body style={{ margin: "0 auto", maxWidth: 600 }}>
+            End-to-end data engineering and intelligent AI systems designed to solve structural business bottlenecks.
+          </Body>
+        </div>
+        
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", 
+          gap: "2rem" 
+        }}>
+          {SERVICES.map(s => (
+            <div 
+              key={s.id} 
+              className="glass-card glass-card-hover" 
+              style={{ 
+                padding: "3rem 2.5rem", 
+                display: "flex", 
+                flexDirection: "column", 
+                alignItems: "center", 
+                textAlign: "center" 
+              }}
+            >
+              <div style={{ ...iconBox(s.accent), marginBottom: "1.5rem" }}>
+                <s.Icon size={28} />
+              </div>
+              <p style={{ 
+                fontFamily: "'Outfit', sans-serif", 
+                color: TextMain, 
+                fontWeight: 800, 
+                fontSize: "1.4rem", 
+                marginBottom: "1rem", 
+                letterSpacing: "-0.01em" 
+              }}>
+                {s.title}
+              </p>
+              <Body style={{ fontSize: "0.95rem" }}>{s.desc}</Body>
+            </div>
+          ))}
+        </div>
       </div>
     </FadeSection>
   );
@@ -789,294 +1572,706 @@ function TopProjects({ onNavigateToLibrary }) {
   const categories = [...new Set(TOP_PROJECTS.map(p => p.category))];
 
   return (
-    <FadeSection id="projects" style={{ padding: "6rem 1.5rem" }}>
-      
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
-        <div>
-          <Label>Showcase</Label>
-          <H>Featured Deployments</H>
+    <FadeSection id="projects" style={{ padding: "clamp(3rem, 8vh, 6rem) 0" }}>
+      <div className="content-container">
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "flex-end", 
+          flexWrap: "wrap", 
+          gap: "2rem", 
+          marginBottom: "4rem" 
+        }}>
+          <div>
+            <Label>Showcase</Label>
+            <H>Featured Deployments</H>
+          </div>
+          <button 
+            onClick={onNavigateToLibrary} 
+            className="ghost-btn" 
+            style={{ padding: "0.6rem 1.5rem", fontSize: "0.9rem" }}
+          >
+            Search Full Library <ArrowRight size={16} />
+          </button>
         </div>
-        <button onClick={onNavigateToLibrary} className="ghost-btn" style={{ padding: "0.6rem 1.5rem", fontSize: "0.9rem" }}>
-          Search Full Library <ArrowRight size={16} />
-        </button>
-      </div>
 
-      {TOP_PROJECTS.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "4rem 0", background: "rgba(255,255,255,0.4)", borderRadius: "16px", border: "1px dashed #B6B6B6" }}>
-          <Body style={{ color: "#9B9B9B" }}>Exciting new machine learning projects are currently under development.</Body>
-        </div>
-      ) : (
-        categories.map(category => {
-          const categoryProjects = TOP_PROJECTS.filter(p => p.category === category).slice(0, 5);
-          return (
-            <div key={category} style={{ marginBottom: "5rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2.5rem" }}>
-                <h3 style={{ fontFamily: "'Inter', sans-serif", color: TextMain, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.01em" }}>{category}</h3>
-                <div style={{ flex: 1, height: "1px", background: `#D1D1D1` }} />
-              </div>
+        {TOP_PROJECTS.length === 0 ? (
+          <div style={{ 
+            textAlign: "center", 
+            padding: "4rem 0", 
+            background: "rgba(255,255,255,0.4)", 
+            borderRadius: "16px", 
+            border: "1px dashed #B6B6B6" 
+          }}>
+            <Body style={{ color: "#9B9B9B" }}>
+              Exciting new machine learning projects are currently under development.
+            </Body>
+          </div>
+        ) : (
+          categories.map(category => {
+            const categoryProjects = TOP_PROJECTS.filter(p => p.category === category).slice(0, 5);
+            return (
+              <div key={category} style={{ marginBottom: "5rem" }}>
+                <div style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: "1.5rem", 
+                  marginBottom: "2.5rem" 
+                }}>
+                  <h3 style={{ 
+                    fontFamily: "'Inter', sans-serif", 
+                    color: TextMain, 
+                    fontSize: "1.2rem", 
+                    fontWeight: 800, 
+                    letterSpacing: "-0.01em" 
+                  }}>
+                    {category}
+                  </h3>
+                  <div style={{ flex: 1, height: "1px", background: "#D1D1D1" }} />
+                </div>
 
-              <div style={{ display: "grid", gap: "2rem" }}>
-                {categoryProjects.map((p) => (
-                  <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "3rem", position: "relative", overflow: "hidden", display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }}>
-                    
-                    <div style={{ position: "absolute", right: -100, top: -100, width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${p.accent}20 0%, transparent 70%)`, pointerEvents: "none" }} />
+                <div style={{ display: "grid", gap: "2rem" }}>
+                  {categoryProjects.map((p) => (
+                    <div 
+                      key={p.id} 
+                      className="glass-card glass-card-hover" 
+                      style={{ 
+                        padding: "clamp(1.5rem, 4vw, 3rem)", 
+                        position: "relative", 
+                        overflow: "hidden", 
+                        display: "grid", 
+                        gridTemplateColumns: "1fr", 
+                        gap: "2rem" 
+                      }}
+                    >
+                      <div style={{ 
+                        position: "absolute", 
+                        right: -100, 
+                        top: -100, 
+                        width: 300, 
+                        height: 300, 
+                        borderRadius: "50%", 
+                        background: `radial-gradient(circle, ${p.accent}20 0%, transparent 70%)`, 
+                        pointerEvents: "none" 
+                      }} />
 
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
-                        <span className="accent-chip" style={{ background: `${p.accent}15`, color: p.accent, border: `1px solid ${p.accent}30` }}>{p.badge}</span>
+                      <div>
+                        <div style={{ 
+                          display: "flex", 
+                          justifyContent: "space-between", 
+                          alignItems: "flex-start", 
+                          flexWrap: "wrap", 
+                          gap: "1rem", 
+                          marginBottom: "1.5rem" 
+                        }}>
+                          <span className="accent-chip" style={{ 
+                            background: `${p.accent}15`, 
+                            color: p.accent, 
+                            border: `1px solid ${p.accent}30` 
+                          }}>
+                            {p.badge}
+                          </span>
+                          
+                          <div style={{ display: "flex", gap: "1.25rem", flexWrap: "wrap" }}>
+                            {p.github && (
+                              <a href={p.github} target="_blank" rel="noopener noreferrer" className="nav-link">
+                                <Github size={18} /> Source
+                              </a>
+                            )}
+                            {p.apiDocs && (
+                              <a href={p.apiDocs} target="_blank" rel="noopener noreferrer" className="nav-link">
+                                <Server size={18} /> API Docs
+                              </a>
+                            )}
+                            {p.live && (
+                              <a href={p.live} target="_blank" rel="noopener noreferrer" className="nav-link" style={{ color: p.accent }}>
+                                <Activity size={18} /> Live Demo
+                              </a>
+                            )}
+                          </div>
+                        </div>
+
+                        <h3 style={{ 
+                          fontFamily: "'Outfit', sans-serif", 
+                          color: TextMain, 
+                          fontWeight: 800, 
+                          fontSize: "clamp(1.3rem, 3vw, 1.8rem)", 
+                          marginBottom: "1rem", 
+                          letterSpacing: "-0.02em" 
+                        }}>
+                          {p.title}
+                        </h3>
                         
-                        <div style={{ display: "flex", gap: "1.25rem" }}>
-                          {p.github && <a href={p.github} target="_blank" className="nav-link"><Github size={18} /> Source</a>}
-                          {p.apiDocs && <a href={p.apiDocs} target="_blank" className="nav-link"><Server size={18} /> API Docs</a>}
-                          {p.live && <a href={p.live} target="_blank" className="nav-link" style={{ color: p.accent }}><Activity size={18} /> Live Demo</a>}
+                        <div style={{ 
+                          background: "rgba(255,255,255,0.4)", 
+                          padding: "1.25rem", 
+                          borderRadius: "8px", 
+                          borderLeft: `3px solid ${p.accent}`, 
+                          marginBottom: "1.5rem" 
+                        }}>
+                          <p style={{ 
+                            fontFamily: "'Inter', sans-serif", 
+                            color: "#1F2937", 
+                            fontSize: "0.95rem", 
+                            lineHeight: 1.6 
+                          }}>
+                            <strong style={{ color: TextMain }}>The Problem: </strong>{p.problem}
+                          </p>
+                        </div>
+
+                        <Body style={{ marginBottom: "1.5rem" }}>{p.desc}</Body>
+
+                        {p.bullets && (
+                          <ul style={{ 
+                            listStyle: "none", 
+                            marginBottom: "2rem", 
+                            display: "grid", 
+                            gap: "0.75rem" 
+                          }}>
+                            {p.bullets.map(b => (
+                              <li key={b} style={{ 
+                                fontFamily: "'Inter', sans-serif", 
+                                color: "#4B5563", 
+                                fontSize: "0.95rem", 
+                                display: "flex", 
+                                alignItems: "flex-start", 
+                                gap: "0.75rem", 
+                                lineHeight: 1.5 
+                              }}>
+                                <CheckCircle size={18} color={p.accent} style={{ flexShrink: 0, marginTop: "2px" }} /> {b}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                          {p.tech.map(t => (
+                            <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)" }}>
+                              {t}
+                            </span>
+                          ))}
                         </div>
                       </div>
-
-                      <h3 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.8rem", marginBottom: "1rem", letterSpacing: "-0.02em" }}>{p.title}</h3>
-                      
-                      <div style={{ background: "rgba(255,255,255,0.4)", padding: "1.25rem", borderRadius: "8px", borderLeft: `3px solid ${p.accent}`, marginBottom: "1.5rem" }}>
-                        <p style={{ fontFamily: "'Inter', sans-serif", color: "#1F2937", fontSize: "0.95rem", lineHeight: 1.6 }}>
-                          <strong style={{ color: TextMain }}>The Problem: </strong>{p.problem}
-                        </p>
-                      </div>
-
-                      <Body style={{ marginBottom: "1.5rem" }}>{p.desc}</Body>
-
-                      {p.bullets && (
-                        <ul style={{ listStyle: "none", marginBottom: "2rem", display: "grid", gap: "0.75rem" }}>
-                          {p.bullets.map(b => (
-                            <li key={b} style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", fontSize: "0.95rem", display: "flex", alignItems: "flex-start", gap: "0.75rem", lineHeight: 1.5 }}>
-                              <CheckCircle size={18} color={p.accent} style={{ flexShrink: 0, marginTop: "2px" }} /> {b}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                        {p.tech.map(t => <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)" }}>{t}</span>)}
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })
-      )}
+            );
+          })
+        )}
+      </div>
     </FadeSection>
   );
 }
 
 /* ============================================================
-   DEDICATED FULL PROJECT LIBRARY PAGE
+   FULL PROJECT LIBRARY PAGE
    ============================================================ */
 function FullProjectLibraryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [results, setResults] = useState(OTHER_PROJECTS);
 
-  const fuse = useRef(new Fuse(OTHER_PROJECTS, { keys: ["title", "desc", "tech", "category"], threshold: 0.4 })).current;
+  const fuse = useRef(new Fuse(OTHER_PROJECTS, { 
+    keys: ["title", "desc", "tech", "category"], 
+    threshold: 0.4 
+  })).current;
 
   useEffect(() => {
-    let filtered = searchTerm.trim() !== "" ? fuse.search(searchTerm).map(r => r.item) : OTHER_PROJECTS;
-    if (activeFilter !== "all") filtered = filtered.filter(p => p.key === activeFilter);
+    let filtered = searchTerm.trim() !== "" 
+      ? fuse.search(searchTerm).map(r => r.item) 
+      : OTHER_PROJECTS;
+    if (activeFilter !== "all") {
+      filtered = filtered.filter(p => p.key === activeFilter);
+    }
     setResults(filtered);
   }, [searchTerm, activeFilter, fuse]);
 
   return (
     <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
-      <FadeSection id="library-header" style={{ padding: "0 1.5rem" }}>
-        
-        <Label>Archive</Label>
-        <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
-        <Body style={{ marginTop: "1rem", marginBottom: "3rem", maxWidth: 600 }}>Browse the full archive of scripts, dashboards, and integrations. Use the smart search to find specific tech stacks.</Body>
+      <FadeSection id="library-header">
+        <div className="content-container">
+          <Label>Archive</Label>
+          <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
+          <Body style={{ marginTop: "1rem", marginBottom: "3rem", maxWidth: 600 }}>
+            Browse the full archive of scripts, dashboards, and integrations. Use the smart search to find specific tech stacks.
+          </Body>
 
-        <div style={{ position: "relative", marginBottom: "2rem" }}>
-          <Search size={20} className="search-icon" />
-          <input type="text" placeholder="Search Python, FastAPI, Random Forest..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="search-bar" />
-        </div>
+          <div style={{ position: "relative", marginBottom: "2rem" }}>
+            <Search size={20} className="search-icon" />
+            <input 
+              type="text" 
+              placeholder="Search Python, FastAPI, Random Forest..." 
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)} 
+              className="search-bar" 
+            />
+          </div>
 
-        <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginBottom: "4rem" }}>
-          {FILTERS.map(f => (
-            <button key={f.key} className={`filter-btn ${activeFilter === f.key ? "filter-btn-active" : "filter-btn-inactive"}`} onClick={() => setActiveFilter(f.key)}>{f.label}</button>
-          ))}
-        </div>
-
-        {results.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(340px,1fr))", gap: "2rem" }}>
-            {results.map(p => (
-              <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "2rem", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-                  <span className="tech-chip" style={{ background: "rgba(255,255,255,0.6)", border: "none" }}>{p.category}</span>
-                  <div style={{ display: "flex", gap: "0.75rem" }}>
-                    {p.github && <a href={p.github} target="_blank" title="Code" className="nav-link"><Github size={18} /></a>}
-                    {p.apiDocs && <a href={p.apiDocs} target="_blank" title="API" className="nav-link"><Server size={18} /></a>}
-                    {p.live && <a href={p.live} target="_blank" title="Live" className="nav-link" style={{ color: Accent }}><Activity size={18} /></a>}
-                  </div>
-                </div>
-                <h3 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 700, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.01em" }}>{p.title}</h3>
-                <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>{p.desc}</Body>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "auto" }}>
-                  {p.tech.map(t => <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1" }}>{t}</span>)}
-                </div>
-              </div>
+          <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginBottom: "4rem" }}>
+            {FILTERS.map(f => (
+              <button 
+                key={f.key} 
+                className={`filter-btn ${activeFilter === f.key ? "filter-btn-active" : "filter-btn-inactive"}`} 
+                onClick={() => setActiveFilter(f.key)}
+              >
+                {f.label}
+              </button>
             ))}
           </div>
-        ) : (
-          <div style={{ textAlign: "center", padding: "6rem 0", background: "rgba(255,255,255,0.4)", borderRadius: "16px", border: "1px dashed #D1D1D1" }}>
-            <Database size={48} color="#B6B6B6" style={{ margin: "0 auto 1rem" }} />
-            <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "1.5rem", color: TextMain, fontWeight: 700 }}>No results found</p>
-            <Body>Try adjusting your search terms.</Body>
-            <button onClick={() => {setSearchTerm(""); setActiveFilter("all");}} className="ghost-btn" style={{ marginTop: "1.5rem" }}>Clear Search</button>
-          </div>
-        )}
+
+          {results.length > 0 ? (
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", 
+              gap: "2rem" 
+            }}>
+              {results.map(p => (
+                <div 
+                  key={p.id} 
+                  className="glass-card glass-card-hover" 
+                  style={{ padding: "2rem", display: "flex", flexDirection: "column" }}
+                >
+                  <div style={{ 
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "flex-start", 
+                    marginBottom: "1.5rem" 
+                  }}>
+                    <span className="tech-chip" style={{ background: "rgba(255,255,255,0.6)", border: "none" }}>
+                      {p.category}
+                    </span>
+                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                      {p.github && (
+                        <a href={p.github} target="_blank" rel="noopener noreferrer" title="Code" className="nav-link">
+                          <Github size={18} />
+                        </a>
+                      )}
+                      {p.apiDocs && (
+                        <a href={p.apiDocs} target="_blank" rel="noopener noreferrer" title="API" className="nav-link">
+                          <Server size={18} />
+                        </a>
+                      )}
+                      {p.live && (
+                        <a href={p.live} target="_blank" rel="noopener noreferrer" title="Live" className="nav-link" style={{ color: Accent }}>
+                          <Activity size={18} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <h3 style={{ 
+                    fontFamily: "'Outfit', sans-serif", 
+                    color: TextMain, 
+                    fontWeight: 700, 
+                    fontSize: "1.25rem", 
+                    marginBottom: "1rem", 
+                    letterSpacing: "-0.01em" 
+                  }}>
+                    {p.title}
+                  </h3>
+                  <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>
+                    {p.desc}
+                  </Body>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "auto" }}>
+                    {p.tech.map(t => (
+                      <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1" }}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ 
+              textAlign: "center", 
+              padding: "6rem 0", 
+              background: "rgba(255,255,255,0.4)", 
+              borderRadius: "16px", 
+              border: "1px dashed #D1D1D1" 
+            }}>
+              <Database size={48} color="#B6B6B6" style={{ margin: "0 auto 1rem" }} />
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "1.5rem", color: TextMain, fontWeight: 700 }}>
+                No results found
+              </p>
+              <Body>Try adjusting your search terms.</Body>
+              <button 
+                onClick={() => {setSearchTerm(""); setActiveFilter("all");}} 
+                className="ghost-btn" 
+                style={{ marginTop: "1.5rem" }}
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+        </div>
       </FadeSection>
     </div>
   );
 }
 
 /* ============================================================
-   RESEARCH 
+   RESEARCH
    ============================================================ */
 function Research() {
   if (RESEARCH.length === 0) return null;
   const isCarousel = RESEARCH.length >= 5;
 
   return (
-    <FadeSection id="research" style={{ padding: "6rem 1.5rem" }}>
-      
-      <Label>Academia</Label>
-      <H>Research Papers</H>
-      
-      {isCarousel ? (
-        <div className="carousel-container" style={{ marginTop: "3rem" }}>
-          {RESEARCH.map(r => (
-            <div key={r.id} className="glass-card carousel-card glass-card-hover" style={{ padding: "2.5rem" }}>
-              <span className="accent-chip" style={{ alignSelf: "flex-start", marginBottom: "1.5rem" }}>{r.status}</span>
-              <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.3rem", lineHeight: 1.4, marginBottom: "1rem" }}>{r.title}</p>
-              <Body style={{ fontSize: "0.95rem", marginBottom: "1.5rem", flexGrow: 1 }}>{r.abstract}</Body>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>{r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}</div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ marginTop: "3rem", display: "grid", gap: "1.5rem" }}>
-          {RESEARCH.map(r => (
-            <div key={r.id} className="glass-card glass-card-hover" style={{ padding: "3rem", display: "flex", flexDirection: "column", borderLeft: `4px solid ${Accent}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <BookOpen size={20} color={Accent} />
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: Accent, fontSize: "0.85rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>Academic Publication</span>
+    <FadeSection id="research" style={{ padding: "clamp(3rem, 8vh, 6rem) 0" }}>
+      <div className="content-container">
+        <Label>Academia</Label>
+        <H>Research Papers</H>
+        
+        {isCarousel ? (
+          <div className="carousel-container" style={{ marginTop: "3rem" }}>
+            {RESEARCH.map(r => (
+              <div key={r.id} className="glass-card carousel-card glass-card-hover" style={{ padding: "2.5rem" }}>
+                <span className="accent-chip" style={{ alignSelf: "flex-start", marginBottom: "1.5rem" }}>
+                  {r.status}
+                </span>
+                <p style={{ 
+                  fontFamily: "'Outfit', sans-serif", 
+                  color: TextMain, 
+                  fontWeight: 800, 
+                  fontSize: "1.3rem", 
+                  lineHeight: 1.4, 
+                  marginBottom: "1rem" 
+                }}>
+                  {r.title}
+                </p>
+                <Body style={{ fontSize: "0.95rem", marginBottom: "1.5rem", flexGrow: 1 }}>
+                  {r.abstract}
+                </Body>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                  {r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}
                 </div>
-                <span className="accent-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1", color: TextMain }}>{r.status}</span>
               </div>
-              <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.4, marginBottom: "1rem" }}>{r.title}</p>
-              <Body style={{ fontSize: "1rem", marginBottom: "1.5rem", maxWidth: 800 }}>{r.abstract}</Body>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>{r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}</div>
-            </div>
-          ))}
-        </div>
-      )}
-      
+            ))}
+          </div>
+        ) : (
+          <div style={{ marginTop: "3rem", display: "grid", gap: "1.5rem" }}>
+            {RESEARCH.map(r => (
+              <div 
+                key={r.id} 
+                className="glass-card glass-card-hover" 
+                style={{ 
+                  padding: "clamp(1.5rem, 4vw, 3rem)", 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  borderLeft: `4px solid ${Accent}` 
+                }}
+              >
+                <div style={{ 
+                  display: "flex", 
+                  justifyContent: "space-between", 
+                  alignItems: "flex-start", 
+                  flexWrap: "wrap", 
+                  gap: "1rem", 
+                  marginBottom: "1rem" 
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <BookOpen size={20} color={Accent} />
+                    <span style={{ 
+                      fontFamily: "'Inter', sans-serif", 
+                      color: Accent, 
+                      fontSize: "0.85rem", 
+                      fontWeight: 700, 
+                      textTransform: "uppercase", 
+                      letterSpacing: "0.05em" 
+                    }}>
+                      Academic Publication
+                    </span>
+                  </div>
+                  <span className="accent-chip" style={{ 
+                    background: "rgba(255,255,255,0.5)", 
+                    border: "1px solid #D1D1D1", 
+                    color: TextMain 
+                  }}>
+                    {r.status}
+                  </span>
+                </div>
+                <p style={{ 
+                  fontFamily: "'Outfit', sans-serif", 
+                  color: TextMain, 
+                  fontWeight: 800, 
+                  fontSize: "clamp(1.2rem, 3vw, 1.5rem)", 
+                  lineHeight: 1.4, 
+                  marginBottom: "1rem" 
+                }}>
+                  {r.title}
+                </p>
+                <Body style={{ fontSize: "1rem", marginBottom: "1.5rem", maxWidth: 800 }}>
+                  {r.abstract}
+                </Body>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                  {r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </FadeSection>
   );
 }
 
 /* ============================================================
-   LEADERSHIP 
+   LEADERSHIP
    ============================================================ */
 function Leadership() {
   const isCarousel = LEADERSHIP_CARDS.length >= 5;
 
   return (
-    <FadeSection id="leadership" style={{ padding: "6rem 1.5rem" }}>
-      
-      <Label>Discipline</Label>
-      <H>Beyond the Code</H>
-      <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
-      
-      <div className={isCarousel ? "carousel-container" : ""} style={!isCarousel ? { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "2rem" } : {}}>
-        {LEADERSHIP_CARDS.map(card => (
-          <div key={card.id} className={`glass-card glass-card-hover ${isCarousel ? 'carousel-card' : ''}`} style={{ padding: "2.5rem", display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-              <div style={{ ...iconBox(card.iconColor), background: `${card.iconColor}15` }}>
-                {card.isMedal ? <Award size={24} color={card.iconColor} /> : <Star size={24} color={card.iconColor} />}
+    <FadeSection id="leadership" style={{ padding: "clamp(3rem, 8vh, 6rem) 0" }}>
+      <div className="content-container">
+        <Label>Discipline</Label>
+        <H>Beyond the Code</H>
+        <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>
+          Execution, discipline, and leadership developed both inside and outside the lab.
+        </Body>
+        
+        <div 
+          className={isCarousel ? "carousel-container" : ""} 
+          style={!isCarousel ? { 
+            display: "grid", 
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
+            gap: "2rem" 
+          } : {}}
+        >
+          {LEADERSHIP_CARDS.map(card => (
+            <div 
+              key={card.id} 
+              className={`glass-card glass-card-hover ${isCarousel ? 'carousel-card' : ''}`} 
+              style={{ padding: "2.5rem", display: "flex", flexDirection: "column" }}
+            >
+              <div style={{ 
+                display: "flex", 
+                gap: "1.25rem", 
+                alignItems: "flex-start", 
+                marginBottom: "1.5rem" 
+              }}>
+                <div style={{ ...iconBox(card.iconColor), background: `${card.iconColor}15` }}>
+                  {card.isMedal ? (
+                    <Award size={24} color={card.iconColor} />
+                  ) : (
+                    <Star size={24} color={card.iconColor} />
+                  )}
+                </div>
+                <div>
+                  <p style={{ 
+                    fontFamily: "'Outfit', sans-serif", 
+                    color: TextMain, 
+                    fontWeight: 800, 
+                    fontSize: "1.2rem", 
+                    letterSpacing: "-0.01em" 
+                  }}>
+                    {card.title}
+                  </p>
+                  <p style={{ 
+                    fontFamily: "'Inter', sans-serif", 
+                    color: "#9B9B9B", 
+                    fontSize: "0.9rem", 
+                    marginTop: "0.25rem", 
+                    fontWeight: 500 
+                  }}>
+                    {card.subtitle}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.2rem", letterSpacing: "-0.01em" }}>{card.title}</p>
-                <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.9rem", marginTop: "0.25rem", fontWeight: 500 }}>{card.subtitle}</p>
-              </div>
-            </div>
-            
-            <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>{card.desc}</Body>
-            
-            {card.isMedal ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "auto" }}>
-                {card.items.map(m => (
-                  <div key={m.title} style={{ background: "rgba(255,255,255,0.4)", border: `1px solid #D1D1D1`, borderRadius: 10, padding: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <p style={{ fontFamily: "'Inter', sans-serif", color: TextMain, fontWeight: 700, fontSize: "0.9rem" }}>{m.title}</p>
-                      <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.75rem" }}>{m.tournament}</p>
+              
+              <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>
+                {card.desc}
+              </Body>
+              
+              {card.isMedal ? (
+                <div style={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  gap: "0.75rem", 
+                  marginTop: "auto" 
+                }}>
+                  {card.items.map(m => (
+                    <div 
+                      key={m.title} 
+                      style={{ 
+                        background: "rgba(255,255,255,0.4)", 
+                        border: "1px solid #D1D1D1", 
+                        borderRadius: 10, 
+                        padding: "1rem", 
+                        display: "flex", 
+                        justifyContent: "space-between", 
+                        alignItems: "center" 
+                      }}
+                    >
+                      <div>
+                        <p style={{ 
+                          fontFamily: "'Inter', sans-serif", 
+                          color: TextMain, 
+                          fontWeight: 700, 
+                          fontSize: "0.9rem" 
+                        }}>
+                          {m.title}
+                        </p>
+                        <p style={{ 
+                          fontFamily: "'Inter', sans-serif", 
+                          color: "#9B9B9B", 
+                          fontSize: "0.75rem" 
+                        }}>
+                          {m.tournament}
+                        </p>
+                      </div>
+                      <span style={{ 
+                        fontFamily: "'Inter', sans-serif", 
+                        color: m.color, 
+                        fontWeight: 800, 
+                        fontSize: "0.9rem" 
+                      }}>
+                        {m.emoji} {m.medal}
+                      </span>
                     </div>
-                    <span style={{ fontFamily: "'Inter', sans-serif", color: m.color, fontWeight: 800, fontSize: "0.9rem" }}>{m.emoji} {m.medal}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "auto" }}>
-                {card.items.map(a => (
-                  <li key={a.text} style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", fontSize: "0.9rem", display: "flex", alignItems: "flex-start", gap: "0.75rem", lineHeight: 1.5 }}>
-                    <ArrowRight size={16} color={card.iconColor} style={{ marginTop: "2px", flexShrink: 0 }} /> {a.text}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+                  ))}
+                </div>
+              ) : (
+                <ul style={{ 
+                  listStyle: "none", 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  gap: "0.5rem", 
+                  marginTop: "auto" 
+                }}>
+                  {card.items.map(a => (
+                    <li 
+                      key={a.text} 
+                      style={{ 
+                        fontFamily: "'Inter', sans-serif", 
+                        color: "#4B5563", 
+                        fontSize: "0.9rem", 
+                        display: "flex", 
+                        alignItems: "flex-start", 
+                        gap: "0.75rem", 
+                        lineHeight: 1.5 
+                      }}
+                    >
+                      <ArrowRight size={16} color={card.iconColor} style={{ marginTop: "2px", flexShrink: 0 }} /> {a.text}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      
     </FadeSection>
   );
 }
 
 /* ============================================================
-   HIRE ME 
+   HIRE ME / CONTACT
    ============================================================ */
 function Contact({ copyEmail }) {
   return (
-    <FadeSection id="hireme" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-        <Label>Hire Me</Label>
-        <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>Let's Build Together</H>
-        <Body style={{ margin: "0 auto 3rem", maxWidth: 500, fontSize: "1.1rem" }}>
-          My inbox is always open. Whether you have a robust project, a fractional retainer opportunity, or just want to connect, I'll reply within 24 hours.
-        </Body>
+    <FadeSection id="hireme" style={{ padding: "clamp(3rem, 8vh, 6rem) 0" }}>
+      <div className="content-container">
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+          <Label>Hire Me</Label>
+          <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>
+            Let's Build Together
+          </H>
+          <Body style={{ margin: "0 auto 3rem", maxWidth: 500, fontSize: "1.1rem" }}>
+            My inbox is always open. Whether you have a robust project, a fractional retainer opportunity, or just want to connect, I'll reply within 24 hours.
+          </Body>
 
-        <div className="glass-card" style={{ padding: "4rem 2rem", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: "400px", height: "400px", background: "rgba(16, 185, 129, 0.05)", filter: "blur(80px)", borderRadius: "50%", pointerEvents: "none" }} />
-          
-          <div style={{ margin: "0 auto 1.5rem", width: 80, height: 80, borderRadius: 24, background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Mail size={40} color={Accent} />
-          </div>
-          
-          <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: "clamp(1.5rem, 4vw, 2.5rem)", color: TextMain, marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>
-            {PERSONAL.email}
-          </h3>
+          <div className="glass-card" style={{ padding: "clamp(2rem, 5vw, 4rem) 2rem", position: "relative", overflow: "hidden" }}>
+            <div style={{ 
+              position: "absolute", 
+              top: "-50%", 
+              left: "50%", 
+              transform: "translateX(-50%)", 
+              width: "400px", 
+              height: "400px", 
+              background: "rgba(16, 185, 129, 0.05)", 
+              filter: "blur(80px)", 
+              borderRadius: "50%", 
+              pointerEvents: "none" 
+            }} />
+            
+            <div style={{ 
+              margin: "0 auto 1.5rem", 
+              width: 80, 
+              height: 80, 
+              borderRadius: 24, 
+              background: "rgba(16, 185, 129, 0.1)", 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center" 
+            }}>
+              <Mail size={40} color={Accent} />
+            </div>
+            
+            <h3 style={{ 
+              fontFamily: "'Outfit', sans-serif", 
+              fontWeight: 900, 
+              fontSize: "clamp(1.2rem, 3vw, 2rem)", 
+              color: TextMain, 
+              marginBottom: "0.5rem", 
+              letterSpacing: "-0.02em",
+              wordBreak: "break-all"
+            }}>
+              {PERSONAL.email}
+            </h3>
 
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap", margin: "2.5rem 0" }}>
-            <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${PERSONAL.email}`} target="_blank" rel="noopener noreferrer" className="accent-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Mail size={20} /> Open Gmail</a>
-            <button onClick={copyEmail} className="ghost-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Copy size={20} /> Copy</button>
-          </div>
-          
-          <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
-             {[{ href: PERSONAL.linkedin, Icon: Linkedin, label: "LinkedIn" }, { href: PERSONAL.github, Icon: Github, label: "GitHub" }, { href: PERSONAL.fiverr, Icon: Fiverr, label: "Fiverr" }].map(({ href, Icon, label }) => (
-               <a key={label} href={href} target="_blank" className="ghost-btn" style={{ padding: "0.5rem 1.1rem", fontSize: "0.85rem" }}>
-                 <Icon size={16} /> {label}
-               </a>
-             ))}
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "center", 
+              gap: "1rem", 
+              flexWrap: "wrap", 
+              margin: "2.5rem 0" 
+            }}>
+              <a 
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${PERSONAL.email}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="accent-btn" 
+                style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}
+              >
+                <Mail size={20} /> Open Gmail
+              </a>
+              <button 
+                onClick={copyEmail} 
+                className="ghost-btn" 
+                style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}
+              >
+                <Copy size={20} /> Copy
+              </button>
+            </div>
+            
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "center", 
+              gap: "1.5rem", 
+              flexWrap: "wrap", 
+              marginTop: "1rem" 
+            }}>
+              {[
+                { href: PERSONAL.linkedin, Icon: Linkedin, label: "LinkedIn" }, 
+                { href: PERSONAL.github, Icon: Github, label: "GitHub" }, 
+                { href: PERSONAL.fiverr, Icon: Fiverr, label: "Fiverr" }
+              ].map(({ href, Icon, label }) => (
+                <a 
+                  key={label} 
+                  href={href} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="ghost-btn" 
+                  style={{ padding: "0.5rem 1.1rem", fontSize: "0.85rem" }}
+                >
+                  <Icon size={16} /> {label}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-
       </div>
     </FadeSection>
   );
@@ -1085,16 +2280,54 @@ function Contact({ copyEmail }) {
 /* ============================================================
    FOOTER
    ============================================================ */
-function Footer({ copyEmail }) {
+function Footer() {
   return (
-    <footer style={{ position: "relative", zIndex: 150, background: "#E7E7E7", borderTop: "1px solid #D1D1D1", padding: "2rem 1.5rem", textAlign: "center" }}>
-      <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.5rem", marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>R.M.L.K.</p>
-      <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.85rem", fontWeight: 500 }}>
-        © 2026 R.M Lochana Kalhara Ranathunga · Data Science & ML Engineer
+    <footer style={{ 
+      position: "relative", 
+      zIndex: 150, 
+      background: "#E7E7E7", 
+      borderTop: "1px solid #D1D1D1", 
+      padding: "2rem 1.5rem", 
+      textAlign: "center" 
+    }}>
+      <p style={{ 
+        fontFamily: "'Outfit', sans-serif", 
+        color: TextMain, 
+        fontWeight: 900, 
+        fontSize: "1.5rem", 
+        marginBottom: "0.5rem", 
+        letterSpacing: "-0.02em" 
+      }}>
+        R.M.L.K.
       </p>
-      <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginTop: "1.5rem" }}>
-        {[{ href: PERSONAL.linkedin, Icon: Linkedin }, { href: PERSONAL.github, Icon: Github }, { href: PERSONAL.fiverr, Icon: Fiverr }].map(({ href, Icon }, i) => (
-          <a key={i} href={href} target="_blank" style={{ color: "#9B9B9B", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = TextMain} onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}>
+      <p style={{ 
+        fontFamily: "'Inter', sans-serif", 
+        color: "#9B9B9B", 
+        fontSize: "0.85rem", 
+        fontWeight: 500 
+      }}>
+        © {new Date().getFullYear()} R.M Lochana Kalhara Ranathunga · Data Science & ML Engineer
+      </p>
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        gap: "1.5rem", 
+        marginTop: "1.5rem" 
+      }}>
+        {[
+          { href: PERSONAL.linkedin, Icon: Linkedin }, 
+          { href: PERSONAL.github, Icon: Github }, 
+          { href: PERSONAL.fiverr, Icon: Fiverr }
+        ].map(({ href, Icon }, i) => (
+          <a 
+            key={i} 
+            href={href} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ color: "#9B9B9B", transition: "color 0.2s" }} 
+            onMouseEnter={e => e.currentTarget.style.color = TextMain} 
+            onMouseLeave={e => e.currentTarget.style.color = "#9B9B9B"}
+          >
             <Icon size={20} />
           </a>
         ))}
@@ -1104,7 +2337,7 @@ function Footer({ copyEmail }) {
 }
 
 /* ============================================================
-   ROOT APP (VERCEL STRETCH FIX APPLIED HERE)
+   ROOT APP
    ============================================================ */
 export default function Portfolio() {
   const [currentView, setCurrentView] = useState("home"); 
@@ -1121,44 +2354,58 @@ export default function Portfolio() {
         window.scrollTo(0, 0);
       } else {
         setCurrentView("home");
-        setTimeout(() => window.scrollTo({ top: scrollPosition.current, behavior: "instant" }), 0);
+        setTimeout(() => {
+          window.scrollTo({ top: scrollPosition.current, behavior: "instant" });
+        }, 0);
       }
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const navigateToLibrary = () => {
+  const navigateToLibrary = useCallback(() => {
     scrollPosition.current = window.scrollY;
     window.history.pushState({ view: 'library' }, '', '#library');
     setCurrentView("library");
     window.scrollTo(0, 0);
-  };
+  }, []);
 
-  const navigateToHome = () => {
+  const navigateToHome = useCallback(() => {
     if (window.history.state && window.history.state.view === 'library') {
       window.history.back(); 
     } else {
       window.history.pushState({ view: 'home' }, '', window.location.pathname);
       setCurrentView("home");
-      setTimeout(() => window.scrollTo({ top: scrollPosition.current, behavior: "instant" }), 0);
+      setTimeout(() => {
+        window.scrollTo({ top: scrollPosition.current, behavior: "instant" });
+      }, 0);
     }
-  };
+  }, []);
 
-  const copyEmail = (e) => {
+  const copyEmail = useCallback((e) => {
     if (e) e.preventDefault();
-    navigator.clipboard.writeText(PERSONAL.email);
-    setToastCounter(prev => prev + 1);
-  };
+    navigator.clipboard.writeText(PERSONAL.email).then(() => {
+      setToastCounter(prev => prev + 1);
+    }).catch(() => {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = PERSONAL.email;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setToastCounter(prev => prev + 1);
+    });
+  }, []);
 
   return (
     <div style={{ minHeight: "100vh", position: "relative", overflowX: "hidden" }}>
       <style>{GLOBAL_CSS}</style>
       
-      <Nav currentView={currentView} navigateToHome={navigateToHome} />
+      {currentView === "home" && <YScrollTracker />}
 
       <div className="main-wrapper">
-        {currentView === "home" && <YScrollTracker />}
+        <Nav currentView={currentView} navigateToHome={navigateToHome} />
         
         {currentView === "home" ? (
           <>
@@ -1173,12 +2420,11 @@ export default function Portfolio() {
         ) : (
           <FullProjectLibraryPage />
         )}
-        
       </div>
       
-      <Footer copyEmail={copyEmail} />
+      <Footer />
 
-      <div className="toast-container">
+      <div className="toast-container" aria-live="polite">
         {toastCounter > 0 && <Toast key={toastCounter} />}
       </div>
     </div>
