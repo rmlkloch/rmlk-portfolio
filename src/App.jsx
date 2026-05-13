@@ -158,13 +158,16 @@ const GLOBAL_CSS = `
     position: absolute; left: 39px; top: 12px; bottom: 12px; width: 2px;
     z-index: 0;
   }
+  
   .yscroll-line-bg {
-    position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
+    position: absolute; inset: 0; 
+    background: linear-gradient(to bottom, transparent 0%, rgba(209, 209, 209, 0.6) 15%, rgba(209, 209, 209, 0.6) 85%, transparent 100%); 
   }
+  
   .yscroll-line-fill {
     position: absolute; top: 0; left: 0; width: 100%; 
-    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
-    transition: height 0.1s linear;
+    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 120px), #10B981 100%);
+    transition: height 0.15s linear;
   }
   
   .yscroll-node {
@@ -177,9 +180,12 @@ const GLOBAL_CSS = `
     width: 10px; height: 10px; border-radius: 50%;
     background: #E7E7E7; border: 2px solid #B6B6B6;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    flex-shrink: 0; opacity: 0.15;
+    flex-shrink: 0; 
+    opacity: 0; transform: scale(0.5); 
   }
-  .yscroll-node.is-adjacent .yscroll-dot { opacity: 0.6; }
+  .yscroll-node.is-adjacent .yscroll-dot { 
+    opacity: 0.5; transform: scale(1);
+  }
   .yscroll-node.is-active .yscroll-dot {
     opacity: 1; background: #10B981; border-color: #10B981; 
     transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
@@ -195,7 +201,8 @@ const GLOBAL_CSS = `
     pointer-events: none; white-space: nowrap;
   }
   .yscroll-node.is-adjacent .yscroll-label {
-    opacity: 0.4; transform: translateX(-5px) scale(0.95);
+    opacity: 0.4; 
+    transform: translateX(-5px) scale(0.95);
   }
   .yscroll-node.is-active .yscroll-label {
     opacity: 1; color: #10B981; font-weight: 900; 
@@ -207,7 +214,6 @@ const GLOBAL_CSS = `
     .yscroll-tracker-wrapper { display: none; } 
     .hero-container { flex-direction: column-reverse; text-align: center; gap: 3rem; }
     .hero-text { align-items: center; }
-    .hero-badges-wrapper { position: static!important; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; transform: none!important; }
   }
   @media (min-width: 1025px) { 
     .mobile-menu-btn { display:none!important; } 
@@ -401,14 +407,12 @@ function YScrollTracker() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // 1. Show tracker ONLY after scrolling past Hero
       if (window.scrollY > window.innerHeight * 0.6) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
 
-      // 2. Math-based active section logic
       const triggerLine = window.scrollY + (window.innerHeight * 0.4); 
       let current = "";
       
@@ -428,7 +432,6 @@ function YScrollTracker() {
       }
       setActiveSection(current);
 
-      // 3. Precise Progress Fill calculation
       const firstEl = document.getElementById(trackSections[0]);
       const lastEl = document.getElementById(trackSections[trackSections.length - 1]);
       
@@ -444,7 +447,6 @@ function YScrollTracker() {
         }
         setProgressHeight(Math.min(100, Math.max(0, progress)));
 
-        // 4. THE PHYSICAL LOCK (Avoid Footer Overlap)
         if (window.scrollY > end) {
             const overscroll = window.scrollY - end;
             trackerRef.current.style.transform = `translateY(-${overscroll}px)`;
@@ -520,7 +522,7 @@ function Nav({ currentView, navigateToHome }) {
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(255,255,255,0.65)", backdropFilter: "saturate(180%) blur(24px)", WebkitBackdropFilter: "saturate(180%) blur(24px)", borderBottom: "1px solid rgba(209, 209, 209, 0.5)", transition: "all 0.3s" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
         
         {currentView === "home" ? (
           <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
@@ -586,10 +588,10 @@ function Hero({ copyEmail, navigateToLibrary }) {
 
   return (
     <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
-        <div className="hero-container" style={{ display: "flex", gap: "4rem" }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
+        <div className="hero-container" style={{ display: "flex", gap: "3rem", alignItems: "center" }}>
           
-          <div className="hero-text" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div className="hero-text" style={{ flex: 1.1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: 100, padding: "0.4rem 1.25rem", marginBottom: "2rem", alignSelf: "flex-start" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: Accent, animation: "pulse 2s infinite" }} />
               <span style={{ fontFamily: "'Inter', sans-serif", color: "#10B981", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" }}>{PERSONAL.status}</span>
@@ -622,7 +624,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
             </div>
           </div>
 
-          <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", minHeight: "450px" }}>
+          <div style={{ flex: 0.9, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", minHeight: "450px" }}>
             <div style={{ position: "relative", width: "100%", maxWidth: "420px", aspectRatio: "1/1" }}>
               
               <div style={{ position: "absolute", inset: "-10%", border: "2px solid #D1D1D1", borderRadius: "50%", pointerEvents: "none" }} />
@@ -682,7 +684,7 @@ function About() {
 
   return (
     <FadeSection id="about" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto" }}>
         
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
           
@@ -744,7 +746,7 @@ function About() {
 function Services() {
   return (
     <FadeSection id="services" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <Label>Specialization</Label>
           <H>Services & Architecture</H>
@@ -773,7 +775,7 @@ function TopProjects({ onNavigateToLibrary }) {
 
   return (
     <FadeSection id="projects" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto" }}>
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
           <div>
@@ -870,7 +872,7 @@ function FullProjectLibraryPage() {
 
   return (
     <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
-      <FadeSection id="library-header" style={{ maxWidth: 1000, margin: "0 auto", padding: "0 1.5rem" }}>
+      <FadeSection id="library-header" style={{ maxWidth: "1024px", margin: "0 auto", padding: "0 1.5rem" }}>
         
         <Label>Archive</Label>
         <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
@@ -929,7 +931,7 @@ function Research() {
 
   return (
     <FadeSection id="research" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto" }}>
         <Label>Academia</Label>
         <H>Research Papers</H>
         
@@ -975,7 +977,7 @@ function Leadership() {
 
   return (
     <FadeSection id="leadership" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ maxWidth: "1024px", margin: "0 auto" }}>
         <Label>Discipline</Label>
         <H>Beyond the Code</H>
         <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
