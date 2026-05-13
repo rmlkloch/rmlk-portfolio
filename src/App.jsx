@@ -50,7 +50,6 @@ const GLOBAL_CSS = `
   ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
   ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
   
-  /* LAYOUT SAFE ZONE FOR TRACKER */
   .main-wrapper {
     width: 100%;
     transition: padding-left 0.3s ease;
@@ -74,7 +73,6 @@ const GLOBAL_CSS = `
   .nav-link { color:#1F2937; text-decoration:none; font-size:0.95rem; letter-spacing:0.02em; font-family:'Inter', sans-serif; font-weight:600; transition:color 0.2s; cursor: pointer; background: transparent; border: none; outline: none; display: flex; alignItems: center; gap: 0.25rem; }
   .nav-link:hover { color:#10B981; } 
   
-  /* STANDARD GLASSMORPHISM */
   .glass-card { 
     background: rgba(255, 255, 255, 0.6); 
     border: 1px solid #D1D1D1; 
@@ -90,7 +88,6 @@ const GLOBAL_CSS = `
     box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
   }
   
-  /* SOLID BADGES (For Hero Image) */
   .solid-badge {
     background: #FFFFFF;
     border: 1px solid #E7E7E7;
@@ -104,7 +101,6 @@ const GLOBAL_CSS = `
     box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 
-  /* BUTTONS */
   .accent-btn { background:#1F2937; color:#FFFFFF; border:none; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); }
   .accent-btn:hover { background:#000000; transform:translateY(-2px); box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); }
   
@@ -116,7 +112,6 @@ const GLOBAL_CSS = `
   .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
   .filter-btn-inactive:hover { border-color:#9B9B9B; color:#111827; }
   
-  /* CHIPS */
   .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); WebkitBackdropFilter: blur(5px); }
   .accent-chip { background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.2); color:#059669; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; }
   .dynamic-chip { background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.2); color:#2563EB; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; animation: pulseGlow 2s infinite; }
@@ -145,16 +140,14 @@ const GLOBAL_CSS = `
   @keyframes toastFade { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 10% { opacity: 1; transform: translateY(0) scale(1); } 90% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-20px) scale(0.9); } }
 
   /* ============================================================
-     PERFECTED CAMERA ZOOM TRACKER
+     PERFECTED LENS CAMERA ZOOM TRACKER
      ============================================================ */
   .yscroll-tracker-wrapper {
     position: fixed; top: 0; left: 0; bottom: 0; width: 140px; 
     z-index: 100; pointer-events: none;
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.5s ease;
   }
-  .yscroll-tracker-wrapper.hidden { opacity: 0; transition: opacity 0.4s ease; }
-  .yscroll-tracker-wrapper.visible { opacity: 1; transition: opacity 0.4s ease; }
 
   .yscroll-track {
     position: relative; height: 65vh; width: 100%;
@@ -168,8 +161,6 @@ const GLOBAL_CSS = `
   .yscroll-line-bg {
     position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
   }
-  
-  /* COMET FADE EFFECT: Transparent at top, solid green at the bottom active dot */
   .yscroll-line-fill {
     position: absolute; top: 0; left: 0; width: 100%; 
     background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
@@ -182,7 +173,6 @@ const GLOBAL_CSS = `
     pointer-events: auto; cursor: pointer; z-index: 2; height: 24px; width: 100%;
   }
   
-  /* DOT FADING: Disappears completely when distant */
   .yscroll-dot {
     width: 10px; height: 10px; border-radius: 50%;
     background: #E7E7E7; border: 2px solid #B6B6B6;
@@ -195,7 +185,6 @@ const GLOBAL_CSS = `
     transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
   }
   
-  /* LENS LABEL FADING: Titles slide out from the fog */
   .yscroll-label {
     font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 700;
     color: #9B9B9B; text-transform: uppercase; letter-spacing: 0.1em;
@@ -531,7 +520,7 @@ function Nav({ currentView, navigateToHome }) {
 
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(255,255,255,0.65)", backdropFilter: "saturate(180%) blur(24px)", WebkitBackdropFilter: "saturate(180%) blur(24px)", borderBottom: "1px solid rgba(209, 209, 209, 0.5)", transition: "all 0.3s" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
         
         {currentView === "home" ? (
           <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
@@ -597,7 +586,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
 
   return (
     <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
         <div className="hero-container" style={{ display: "flex", gap: "4rem" }}>
           
           <div className="hero-text" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -693,7 +682,7 @@ function About() {
 
   return (
     <FadeSection id="about" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
           
@@ -755,7 +744,7 @@ function About() {
 function Services() {
   return (
     <FadeSection id="services" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <Label>Specialization</Label>
           <H>Services & Architecture</H>
@@ -784,7 +773,7 @@ function TopProjects({ onNavigateToLibrary }) {
 
   return (
     <FadeSection id="projects" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
           <div>
@@ -881,7 +870,7 @@ function FullProjectLibraryPage() {
 
   return (
     <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
-      <FadeSection id="library-header" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 1.5rem" }}>
+      <FadeSection id="library-header" style={{ maxWidth: 1000, margin: "0 auto", padding: "0 1.5rem" }}>
         
         <Label>Archive</Label>
         <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
@@ -940,7 +929,7 @@ function Research() {
 
   return (
     <FadeSection id="research" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <Label>Academia</Label>
         <H>Research Papers</H>
         
@@ -986,7 +975,7 @@ function Leadership() {
 
   return (
     <FadeSection id="leadership" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         <Label>Discipline</Label>
         <H>Beyond the Code</H>
         <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
@@ -1063,6 +1052,14 @@ function Contact({ copyEmail }) {
             <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${PERSONAL.email}`} target="_blank" rel="noopener noreferrer" className="accent-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Mail size={20} /> Open Gmail</a>
             <button onClick={copyEmail} className="ghost-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Copy size={20} /> Copy</button>
           </div>
+          
+          <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
+             {[{ href: PERSONAL.linkedin, Icon: Linkedin, label: "LinkedIn" }, { href: PERSONAL.github, Icon: Github, label: "GitHub" }, { href: PERSONAL.fiverr, Icon: Fiverr, label: "Fiverr" }].map(({ href, Icon, label }) => (
+               <a key={label} href={href} target="_blank" className="ghost-btn" style={{ padding: "0.5rem 1.1rem", fontSize: "0.85rem" }}>
+                 <Icon size={16} /> {label}
+               </a>
+             ))}
+          </div>
         </div>
 
       </div>
@@ -1092,7 +1089,7 @@ function Footer({ copyEmail }) {
 }
 
 /* ============================================================
-   ROOT APP 
+   ROOT APP
    ============================================================ */
 export default function Portfolio() {
   const [currentView, setCurrentView] = useState("home"); 
