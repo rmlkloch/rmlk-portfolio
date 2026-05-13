@@ -50,6 +50,7 @@ const GLOBAL_CSS = `
   ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
   ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
   
+  /* LAYOUT SAFE ZONE FOR TRACKER */
   .main-wrapper {
     width: 100%;
     transition: padding-left 0.3s ease;
@@ -88,6 +89,7 @@ const GLOBAL_CSS = `
     box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
   }
   
+  /* SOLID BADGES (For Hero Image) */
   .solid-badge {
     background: #FFFFFF;
     border: 1px solid #E7E7E7;
@@ -101,6 +103,7 @@ const GLOBAL_CSS = `
     box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 
+  /* BUTTONS */
   .accent-btn { background:#1F2937; color:#FFFFFF; border:none; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); }
   .accent-btn:hover { background:#000000; transform:translateY(-2px); box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); }
   
@@ -158,16 +161,13 @@ const GLOBAL_CSS = `
     position: absolute; left: 39px; top: 12px; bottom: 12px; width: 2px;
     z-index: 0;
   }
-  
   .yscroll-line-bg {
-    position: absolute; inset: 0; 
-    background: linear-gradient(to bottom, transparent 0%, rgba(209, 209, 209, 0.6) 15%, rgba(209, 209, 209, 0.6) 85%, transparent 100%); 
+    position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
   }
-  
   .yscroll-line-fill {
     position: absolute; top: 0; left: 0; width: 100%; 
-    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 120px), #10B981 100%);
-    transition: height 0.15s linear;
+    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
+    transition: height 0.1s linear;
   }
   
   .yscroll-node {
@@ -180,12 +180,9 @@ const GLOBAL_CSS = `
     width: 10px; height: 10px; border-radius: 50%;
     background: #E7E7E7; border: 2px solid #B6B6B6;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    flex-shrink: 0; 
-    opacity: 0; transform: scale(0.5); 
+    flex-shrink: 0; opacity: 0.15;
   }
-  .yscroll-node.is-adjacent .yscroll-dot { 
-    opacity: 0.5; transform: scale(1);
-  }
+  .yscroll-node.is-adjacent .yscroll-dot { opacity: 0.6; }
   .yscroll-node.is-active .yscroll-dot {
     opacity: 1; background: #10B981; border-color: #10B981; 
     transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
@@ -201,8 +198,7 @@ const GLOBAL_CSS = `
     pointer-events: none; white-space: nowrap;
   }
   .yscroll-node.is-adjacent .yscroll-label {
-    opacity: 0.4; 
-    transform: translateX(-5px) scale(0.95);
+    opacity: 0.4; transform: translateX(-5px) scale(0.95);
   }
   .yscroll-node.is-active .yscroll-label {
     opacity: 1; color: #10B981; font-weight: 900; 
@@ -214,6 +210,7 @@ const GLOBAL_CSS = `
     .yscroll-tracker-wrapper { display: none; } 
     .hero-container { flex-direction: column-reverse; text-align: center; gap: 3rem; }
     .hero-text { align-items: center; }
+    .hero-badges-wrapper { position: static!important; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; transform: none!important; }
   }
   @media (min-width: 1025px) { 
     .mobile-menu-btn { display:none!important; } 
