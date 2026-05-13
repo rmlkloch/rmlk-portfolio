@@ -33,80 +33,33 @@ const Fiverr = ({ size = 24, color = "currentColor" }) => (
 );
 
 /* ============================================================
-   GLOBAL STYLES + FONTS (VERCEL STRETCH FIX)
+   GLOBAL STYLES + FONTS
    ============================================================ */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap');
-  
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior: smooth; }
-  
-  /* Force background everywhere so wide screens don't have white bars */
-  body, html { 
-    background-color: #E7E7E7 !important; 
-    color: #1F2937 !important; 
-    margin: 0 !important; 
-    padding: 0 !important;
-    overflow-x: hidden !important; 
+  body { 
+    background-color: #E7E7E7; 
+    color: #1F2937; 
+    overflow-x: hidden; 
   }
   
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background:#E7E7E7; }
   ::-webkit-scrollbar-thumb { background:#B6B6B6; border-radius:4px; }
   ::-webkit-scrollbar-thumb:hover { background:#9B9B9B; }
-
-  /* =========================================
-     THE MASTER LAYOUT LOCK 
-     This completely prevents Vercel/Tailwind stretching
-  ========================================= */
-  .master-root {
-    max-width: 1280px !important;
-    margin: 0 auto !important;
-    position: relative;
-    background-color: #E7E7E7;
-    min-height: 100vh;
-  }
-
-  /* Fixed layout constraints */
-  .layout-container {
-    max-width: 1024px !important;
-    margin: 0 auto !important;
-    width: 100% !important;
-    display: flex;
-  }
-
-  .sidebar-channel {
-    display: none;
-  }
-  .main-content {
+  
+  /* LAYOUT SAFE ZONE FOR TRACKER */
+  .main-wrapper {
     width: 100%;
+    transition: padding-left 0.3s ease;
   }
-
-  @media (min-width: 1025px) {
-    .sidebar-channel {
-      display: block;
-      width: 140px;
-      flex-shrink: 0;
-    }
-    .main-content {
-      width: calc(100% - 140px);
+  @media (min-width: 1024px) {
+    .main-wrapper {
+      padding-left: 140px; 
     }
   }
-
-  .nav-wrapper {
-    position: sticky !important; 
-    top: 0 !important; 
-    z-index: 200; 
-    background: rgba(255,255,255,0.65); 
-    backdrop-filter: saturate(180%) blur(24px); 
-    -webkit-backdrop-filter: saturate(180%) blur(24px); 
-    border-bottom: 1px solid rgba(209, 209, 209, 0.5); 
-  }
-
-  /* RESPONSIVE HERO FIX */
-  .hero-layout { display: flex; gap: 3rem; align-items: center; }
-  .hero-text-col { flex: 1.1; display: flex; flex-direction: column; justify-content: center; }
-  .hero-img-col { flex: 0.9; display: flex; justify-content: center; align-items: center; position: relative; min-height: 450px; }
 
   .fade-section { 
     opacity: 0; 
@@ -121,6 +74,7 @@ const GLOBAL_CSS = `
   .nav-link { color:#1F2937; text-decoration:none; font-size:0.95rem; letter-spacing:0.02em; font-family:'Inter', sans-serif; font-weight:600; transition:color 0.2s; cursor: pointer; background: transparent; border: none; outline: none; display: flex; alignItems: center; gap: 0.25rem; }
   .nav-link:hover { color:#10B981; } 
   
+  /* STANDARD GLASSMORPHISM */
   .glass-card { 
     background: rgba(255, 255, 255, 0.6); 
     border: 1px solid #D1D1D1; 
@@ -136,6 +90,7 @@ const GLOBAL_CSS = `
     box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
   }
   
+  /* SOLID BADGES (For Hero Image) */
   .solid-badge {
     background: #FFFFFF;
     border: 1px solid #E7E7E7;
@@ -149,6 +104,7 @@ const GLOBAL_CSS = `
     box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 
+  /* BUTTONS */
   .accent-btn { background:#1F2937; color:#FFFFFF; border:none; padding:0.75rem 2rem; border-radius:10px; font-weight:700; font-family:'Inter', sans-serif; font-size:0.95rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition:all 0.2s; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.2); }
   .accent-btn:hover { background:#000000; transform:translateY(-2px); box-shadow: 0 6px 20px rgba(31, 41, 55, 0.3); }
   
@@ -160,6 +116,7 @@ const GLOBAL_CSS = `
   .filter-btn-inactive { background:rgba(255,255,255,0.6); color:#4B5563; border:1px solid #D1D1D1; backdrop-filter: blur(10px); WebkitBackdropFilter: blur(10px); }
   .filter-btn-inactive:hover { border-color:#9B9B9B; color:#111827; }
   
+  /* CHIPS */
   .tech-chip { background:rgba(255,255,255,0.7); border:1px solid #D1D1D1; color:#4B5563; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:600; backdrop-filter: blur(5px); WebkitBackdropFilter: blur(5px); }
   .accent-chip { background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.2); color:#059669; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; }
   .dynamic-chip { background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.2); color:#2563EB; font-size:0.75rem; padding:0.35rem 0.8rem; border-radius:100px; font-family:'Inter', sans-serif; font-weight:700; animation: pulseGlow 2s infinite; }
@@ -188,19 +145,19 @@ const GLOBAL_CSS = `
   @keyframes toastFade { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 10% { opacity: 1; transform: translateY(0) scale(1); } 90% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-20px) scale(0.9); } }
 
   /* ============================================================
-     NATIVE CAMERA ZOOM TRACKER (STICKY FIX FOR FOOTER)
+     PERFECTED LENS CAMERA ZOOM TRACKER
      ============================================================ */
   .yscroll-tracker-wrapper {
-    position: sticky; top: 17.5vh; height: 65vh; width: 100%;
+    position: fixed; top: 0; left: 0; bottom: 0; width: 140px; 
+    z-index: 100; pointer-events: none;
     display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
     transition: opacity 0.5s ease;
-    pointer-events: none;
   }
-  .yscroll-tracker-wrapper.hidden { opacity: 0; }
-  .yscroll-tracker-wrapper.visible { opacity: 1; }
+  .yscroll-tracker-wrapper.hidden { opacity: 0; transition: opacity 0.4s ease; }
+  .yscroll-tracker-wrapper.visible { opacity: 1; transition: opacity 0.4s ease; }
 
   .yscroll-track {
-    position: relative; height: 100%; width: 100%;
+    position: relative; height: 65vh; width: 100%;
     display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start;
   }
   
@@ -208,13 +165,16 @@ const GLOBAL_CSS = `
     position: absolute; left: 39px; top: 12px; bottom: 12px; width: 2px;
     z-index: 0;
   }
+  
   .yscroll-line-bg {
-    position: absolute; inset: 0; background: rgba(209, 209, 209, 0.4); 
+    position: absolute; inset: 0; 
+    background: linear-gradient(to bottom, transparent 0%, rgba(209, 209, 209, 0.6) 15%, rgba(209, 209, 209, 0.6) 85%, transparent 100%); 
   }
+  
   .yscroll-line-fill {
     position: absolute; top: 0; left: 0; width: 100%; 
-    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 100px), #10B981 100%);
-    transition: height 0.1s linear;
+    background: linear-gradient(to bottom, transparent 0%, transparent calc(100% - 120px), #10B981 100%);
+    transition: height 0.15s linear;
   }
   
   .yscroll-node {
@@ -227,9 +187,11 @@ const GLOBAL_CSS = `
     width: 10px; height: 10px; border-radius: 50%;
     background: #E7E7E7; border: 2px solid #B6B6B6;
     transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    flex-shrink: 0; opacity: 0.15;
+    flex-shrink: 0; opacity: 0.15; 
   }
-  .yscroll-node.is-adjacent .yscroll-dot { opacity: 0.6; }
+  .yscroll-node.is-adjacent .yscroll-dot { 
+    opacity: 0.5; transform: scale(1);
+  }
   .yscroll-node.is-active .yscroll-dot {
     opacity: 1; background: #10B981; border-color: #10B981; 
     transform: scale(1.6); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
@@ -254,13 +216,15 @@ const GLOBAL_CSS = `
 
   @media (max-width: 1024px) { 
     .desktop-nav { display:none!important; } 
-    .hero-layout { flex-direction: column-reverse; text-align: center; gap: 2rem; }
-    .hero-text-col { align-items: center; }
-    .hero-img-col { min-height: 350px; width: 100%; }
+    .yscroll-tracker-wrapper { display: none; } 
+    .hero-container { flex-direction: column-reverse; text-align: center; gap: 3rem; }
+    .hero-text { align-items: center; }
     .hero-badges-wrapper { position: static!important; display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: 2rem; transform: none!important; }
   }
   @media (min-width: 1025px) { 
     .mobile-menu-btn { display:none!important; } 
+    .hero-container { flex-direction: row; justify-content: space-between; align-items: center; }
+    .hero-text { max-width: 600px; text-align: left; align-items: flex-start; }
   }
 `;
 
@@ -442,6 +406,7 @@ function YScrollTracker() {
   const [activeSection, setActiveSection] = useState("");
   const [progressHeight, setProgressHeight] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const trackerRef = useRef(null);
 
   const trackSections = ["about", "services", "projects", "research", "leadership", "hireme"];
   const trackLabels = ["About", "Services", "Projects", "Research", "Leadership", "Hire Me"];
@@ -463,7 +428,7 @@ function YScrollTracker() {
       for (const id of trackSections) {
         const el = document.getElementById(id);
         if (el) {
-          const elTop = el.getBoundingClientRect().top + window.scrollY - 80; 
+          const elTop = el.offsetTop - 80; 
           const elBottom = elTop + el.offsetHeight;
           if (triggerLine >= elTop && triggerLine < elBottom) {
             current = id;
@@ -480,9 +445,9 @@ function YScrollTracker() {
       const firstEl = document.getElementById(trackSections[0]);
       const lastEl = document.getElementById(trackSections[trackSections.length - 1]);
       
-      if (firstEl && lastEl) {
-        const start = firstEl.getBoundingClientRect().top + window.scrollY - triggerOffset;
-        const end = lastEl.getBoundingClientRect().top + window.scrollY - triggerOffset;
+      if (firstEl && lastEl && trackerRef.current) {
+        const start = firstEl.offsetTop - triggerOffset;
+        const end = lastEl.offsetTop - triggerOffset;
         const totalDistance = end - start;
         const currentDistance = Math.max(0, window.scrollY - start);
         
@@ -491,6 +456,14 @@ function YScrollTracker() {
           progress = (currentDistance / totalDistance) * 100;
         }
         setProgressHeight(Math.min(100, Math.max(0, progress)));
+
+        // 4. THE PHYSICAL LOCK (Avoid Footer Overlap)
+        if (window.scrollY > end) {
+            const overscroll = window.scrollY - end;
+            trackerRef.current.style.transform = `translateY(-${overscroll}px)`;
+        } else {
+            trackerRef.current.style.transform = `translateY(0px)`;
+        }
       }
     };
 
@@ -501,16 +474,13 @@ function YScrollTracker() {
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
-    if (el) {
-        const top = el.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: "smooth" });
-    }
+    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
   };
 
   const activeIndex = trackSections.indexOf(activeSection);
 
   return (
-    <div className={`yscroll-tracker-wrapper ${isVisible ? 'visible' : 'hidden'}`}>
+    <div className={`yscroll-tracker-wrapper ${isVisible ? 'visible' : 'hidden'}`} ref={trackerRef}>
       <div className="yscroll-track">
         
         <div className="yscroll-line-bounds">
@@ -551,62 +521,54 @@ function Nav({ currentView, navigateToHome }) {
       navigateToHome();
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) {
-            const top = el.getBoundingClientRect().top + window.scrollY - 80;
-            window.scrollTo({ top, behavior: 'smooth' });
-        }
+        if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
       }, 100);
       return;
     }
     const element = document.getElementById(id);
     if (element) {
-        const top = element.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: 'smooth' });
+      window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
     }
   };
 
   return (
-    <nav className="nav-wrapper">
-      <div className="layout-container">
-        <div className="sidebar-channel"></div>
-        <div className="main-content" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 72, padding: "0 1.5rem" }}>
+    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "rgba(255,255,255,0.65)", backdropFilter: "saturate(180%) blur(24px)", WebkitBackdropFilter: "saturate(180%) blur(24px)", borderBottom: "1px solid rgba(209, 209, 209, 0.5)", transition: "all 0.3s" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 72 }}>
+        
+        {currentView === "home" ? (
+          <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
+        ) : (
+          <button onClick={navigateToHome} style={{ background: "transparent", border: "none", color: TextMain, display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Inter', sans-serif", fontWeight: 700, cursor: "pointer" }}>
+            <ArrowLeft size={18} color={Accent} /> Back
+          </button>
+        )}
+
+        {currentView === "home" && (
+          <div className="desktop-nav" style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
+            <button onClick={(e) => handleScroll(e, 'about')} className="nav-link">About</button>
+            <button onClick={(e) => handleScroll(e, 'services')} className="nav-link">Services</button>
             
-            {currentView === "home" ? (
-            <button onClick={(e) => handleScroll(e, 'hero')} style={{ background: "transparent", border: "none", fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 900, fontSize: "1.4rem", letterSpacing: "-0.02em", cursor: "pointer" }}>R.M.L.K.</button>
-            ) : (
-            <button onClick={navigateToHome} style={{ background: "transparent", border: "none", color: TextMain, display: "flex", alignItems: "center", gap: "0.5rem", fontFamily: "'Inter', sans-serif", fontWeight: 700, cursor: "pointer" }}>
-                <ArrowLeft size={18} color={Accent} /> Back
+            <div className="dropdown-container">
+              <button onClick={(e) => handleScroll(e, 'projects')} className="nav-link">
+                Projects <ChevronDown size={14} />
+              </button>
+              <div className="dropdown-content">
+                <button onClick={() => { document.getElementById('btn-lib').click(); }} className="dropdown-item">Comprehensive Library</button>
+              </div>
+            </div>
+
+            <button onClick={(e) => handleScroll(e, 'research')} className="nav-link">Research</button>
+            <button onClick={(e) => handleScroll(e, 'leadership')} className="nav-link">Leadership</button>
+          </div>
+        )}
+
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          {currentView === "home" && <button onClick={(e) => handleScroll(e, 'hireme')} className="accent-btn desktop-nav" style={{ padding: "0.5rem 1.4rem" }}>Hire Me</button>}
+          {currentView === "home" && (
+            <button className="mobile-menu-btn" onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: TextMain, cursor: "pointer", padding: "0.25rem" }}>
+              {open ? <X size={24} /> : <Menu size={24} />}
             </button>
-            )}
-
-            {currentView === "home" && (
-            <div className="desktop-nav" style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
-                <button onClick={(e) => handleScroll(e, 'about')} className="nav-link">About</button>
-                <button onClick={(e) => handleScroll(e, 'services')} className="nav-link">Services</button>
-                
-                <div className="dropdown-container">
-                <button onClick={(e) => handleScroll(e, 'projects')} className="nav-link">
-                    Projects <ChevronDown size={14} />
-                </button>
-                <div className="dropdown-content">
-                    <button onClick={() => { document.getElementById('btn-lib').click(); }} className="dropdown-item">Comprehensive Library</button>
-                </div>
-                </div>
-
-                <button onClick={(e) => handleScroll(e, 'research')} className="nav-link">Research</button>
-                <button onClick={(e) => handleScroll(e, 'leadership')} className="nav-link">Leadership</button>
-            </div>
-            )}
-
-            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            {currentView === "home" && <button onClick={(e) => handleScroll(e, 'hireme')} className="accent-btn desktop-nav" style={{ padding: "0.5rem 1.4rem" }}>Hire Me</button>}
-            {currentView === "home" && (
-                <button className="mobile-menu-btn" onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: TextMain, cursor: "pointer", padding: "0.25rem" }}>
-                {open ? <X size={24} /> : <Menu size={24} />}
-                </button>
-            )}
-            </div>
-
+          )}
         </div>
       </div>
 
@@ -631,17 +593,16 @@ function Hero({ copyEmail, navigateToLibrary }) {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-        const top = element.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top, behavior: 'smooth' });
+      window.scrollTo({ top: element.offsetTop - 80, behavior: 'smooth' });
     }
   };
 
   return (
     <FadeSection id="hero" style={{ minHeight: "100vh", display: "flex", alignItems: "center", paddingTop: 80, paddingBottom: "4rem" }}>
-      <div style={{ padding: "0 1.5rem", width: "100%" }}>
-        <div className="hero-layout">
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 1.5rem", width: "100%" }}>
+        <div className="hero-container" style={{ display: "flex", gap: "4rem" }}>
           
-          <div className="hero-text-col">
+          <div className="hero-text" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: 100, padding: "0.4rem 1.25rem", marginBottom: "2rem", alignSelf: "flex-start" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: Accent, animation: "pulse 2s infinite" }} />
               <span style={{ fontFamily: "'Inter', sans-serif", color: "#10B981", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.05em" }}>{PERSONAL.status}</span>
@@ -674,7 +635,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
             </div>
           </div>
 
-          <div className="hero-img-col">
+          <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", position: "relative", minHeight: "450px" }}>
             <div style={{ position: "relative", width: "100%", maxWidth: "420px", aspectRatio: "1/1" }}>
               
               <div style={{ position: "absolute", inset: "-10%", border: "2px solid #D1D1D1", borderRadius: "50%", pointerEvents: "none" }} />
@@ -692,9 +653,9 @@ function Hero({ copyEmail, navigateToLibrary }) {
               </div>
               
               {/* SOLID WHITE STACKED BADGES */}
-              <div className="hero-badges-wrapper" style={{ position: "absolute", bottom: "12%", right: "-20%", zIndex: 10, display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ position: "absolute", bottom: "12%", right: "-20%", zIndex: 10, display: "flex", flexDirection: "column", gap: "1rem" }}>
                 
-                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem" }}>
+                <div className="solid-badge hero-badges-wrapper" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", background: "#FFFFFF", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.08)", border: "1px solid #E7E7E7" }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <TrendingUp size={18} color={Accent} />
                   </div>
@@ -704,7 +665,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
                   </div>
                 </div>
 
-                <div className="solid-badge" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", marginLeft: "1.5rem" }}>
+                <div className="solid-badge hero-badges-wrapper" style={{ padding: "0.85rem 1.25rem", display: "flex", alignItems: "center", gap: "1rem", background: "#FFFFFF", borderRadius: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.08)", border: "1px solid #E7E7E7", marginLeft: "1.5rem" }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Database size={18} color={Accent} />
                   </div>
@@ -725,7 +686,7 @@ function Hero({ copyEmail, navigateToLibrary }) {
 }
 
 /* ============================================================
-   ABOUT 
+   ABOUT & DYNAMIC SKILLS ENGINE
    ============================================================ */
 function About() {
   const hardcodedSkillsFlat = BASE_SKILLS.flatMap(cat => cat.items.map(i => i.toLowerCase()));
@@ -734,54 +695,57 @@ function About() {
 
   return (
     <FadeSection id="about" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
+      <div className="container">
         
-        <div>
-          <Label>About</Label>
-          <H>The Engineer</H>
-          <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
-          <Body style={{ fontSize: "1.05rem" }}>{PERSONAL.about}</Body>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginTop: "2.5rem" }}>
-            <div className="glass-card" style={{ padding: "1.5rem" }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "1.25rem" }}>NSBM</p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, color: "#9B9B9B", fontSize: "0.85rem" }}>Green University (Class of 2027)</p>
-            </div>
-            <div className="glass-card" style={{ padding: "1.5rem" }}>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "1.25rem" }}>Sri Lanka</p>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, color: "#9B9B9B", fontSize: "0.85rem" }}>Pitipana, Homagama</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="glass-card" style={{ padding: "2.5rem" }}>
-          <Label>Architecture</Label>
-          <H>Technical Stack</H>
-          <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "4rem" }}>
           
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {BASE_SKILLS.map(category => (
-              <div key={category.category}>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "0.9rem", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>{category.category}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                  {category.items.map(item => <span key={item} className="tech-chip">{item}</span>)}
-                </div>
+          <div>
+            <Label>About</Label>
+            <H>The Engineer</H>
+            <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
+            <Body style={{ fontSize: "1.05rem" }}>{PERSONAL.about}</Body>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginTop: "2.5rem" }}>
+              <div className="glass-card" style={{ padding: "1.5rem" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "1.25rem" }}>NSBM</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, color: "#9B9B9B", fontSize: "0.85rem" }}>Green University (Class of 2027)</p>
               </div>
-            ))}
-
-            {dynamicNewSkills.length > 0 && (
-              <div style={{ marginTop: "1rem", padding: "1.5rem", background: "rgba(59, 130, 246, 0.03)", borderRadius: "12px", border: "1px dashed rgba(59, 130, 246, 0.3)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
-                  <Zap size={16} color="#3B82F6" />
-                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: "#3B82F6", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Dynamically Extracted from Projects</p>
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                  {dynamicNewSkills.map(item => <span key={item} className="dynamic-chip">{item}</span>)}
-                </div>
+              <div className="glass-card" style={{ padding: "1.5rem" }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "1.25rem" }}>Sri Lanka</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, color: "#9B9B9B", fontSize: "0.85rem" }}>Pitipana, Homagama</p>
               </div>
-            )}
+            </div>
           </div>
+
+          <div className="glass-card" style={{ padding: "2.5rem" }}>
+            <Label>Architecture</Label>
+            <H>Technical Stack</H>
+            <div style={{ width: 60, height: 4, background: Accent, borderRadius: 2, marginBottom: "2rem" }} />
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+              {BASE_SKILLS.map(category => (
+                <div key={category.category}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: TextMain, fontSize: "0.9rem", marginBottom: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>{category.category}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                    {category.items.map(item => <span key={item} className="tech-chip">{item}</span>)}
+                  </div>
+                </div>
+              ))}
+
+              {dynamicNewSkills.length > 0 && (
+                <div style={{ marginTop: "1rem", padding: "1.5rem", background: "rgba(59, 130, 246, 0.03)", borderRadius: "12px", border: "1px dashed rgba(59, 130, 246, 0.3)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                    <Zap size={16} color="#3B82F6" />
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, color: "#3B82F6", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Dynamically Extracted from Projects</p>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                    {dynamicNewSkills.map(item => <span key={item} className="dynamic-chip">{item}</span>)}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
         </div>
-        
       </div>
     </FadeSection>
   );
@@ -793,20 +757,22 @@ function About() {
 function Services() {
   return (
     <FadeSection id="services" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ textAlign: "center", marginBottom: "4rem" }}>
-        <Label>Specialization</Label>
-        <H>Services & Architecture</H>
-        <Body style={{ margin: "0 auto", maxWidth: 600 }}>End-to-end data engineering and intelligent AI systems designed to solve structural business bottlenecks.</Body>
-      </div>
-      
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "2rem" }}>
-        {SERVICES.map(s => (
-          <div key={s.id} className="glass-card glass-card-hover" style={{ padding: "3rem 2.5rem", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-            <div style={{ ...iconBox(s.accent), marginBottom: "1.5rem" }}><s.Icon size={28} /></div>
-            <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.4rem", marginBottom: "1rem", letterSpacing: "-0.01em" }}>{s.title}</p>
-            <Body style={{ fontSize: "0.95rem" }}>{s.desc}</Body>
-          </div>
-        ))}
+      <div className="container">
+        <div style={{ textAlign: "center", marginBottom: "4rem" }}>
+          <Label>Specialization</Label>
+          <H>Services & Architecture</H>
+          <Body style={{ margin: "0 auto", maxWidth: 600 }}>End-to-end data engineering and intelligent AI systems designed to solve structural business bottlenecks.</Body>
+        </div>
+        
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: "2rem" }}>
+          {SERVICES.map(s => (
+            <div key={s.id} className="glass-card glass-card-hover" style={{ padding: "3rem 2.5rem", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+              <div style={{ ...iconBox(s.accent), marginBottom: "1.5rem" }}><s.Icon size={28} /></div>
+              <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.4rem", marginBottom: "1rem", letterSpacing: "-0.01em" }}>{s.title}</p>
+              <Body style={{ fontSize: "0.95rem" }}>{s.desc}</Body>
+            </div>
+          ))}
+        </div>
       </div>
     </FadeSection>
   );
@@ -820,79 +786,81 @@ function TopProjects({ onNavigateToLibrary }) {
 
   return (
     <FadeSection id="projects" style={{ padding: "6rem 1.5rem" }}>
-      
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
-        <div>
-          <Label>Showcase</Label>
-          <H>Featured Deployments</H>
+      <div className="container">
+        
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "2rem", marginBottom: "4rem" }}>
+          <div>
+            <Label>Showcase</Label>
+            <H>Featured Deployments</H>
+          </div>
+          <button onClick={onNavigateToLibrary} className="ghost-btn" style={{ padding: "0.6rem 1.5rem", fontSize: "0.9rem" }}>
+            Search Full Library <ArrowRight size={16} />
+          </button>
         </div>
-        <button onClick={onNavigateToLibrary} className="ghost-btn" style={{ padding: "0.6rem 1.5rem", fontSize: "0.9rem" }}>
-          Search Full Library <ArrowRight size={16} />
-        </button>
-      </div>
 
-      {TOP_PROJECTS.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "4rem 0", background: "rgba(255,255,255,0.4)", borderRadius: "16px", border: "1px dashed #B6B6B6" }}>
-          <Body style={{ color: "#9B9B9B" }}>Exciting new machine learning projects are currently under development.</Body>
-        </div>
-      ) : (
-        categories.map(category => {
-          const categoryProjects = TOP_PROJECTS.filter(p => p.category === category).slice(0, 5);
-          return (
-            <div key={category} style={{ marginBottom: "5rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2.5rem" }}>
-                <h3 style={{ fontFamily: "'Inter', sans-serif", color: TextMain, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.01em" }}>{category}</h3>
-                <div style={{ flex: 1, height: "1px", background: `#D1D1D1` }} />
-              </div>
+        {TOP_PROJECTS.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "4rem 0", background: "rgba(255,255,255,0.4)", borderRadius: "16px", border: "1px dashed #B6B6B6" }}>
+            <Body style={{ color: "#9B9B9B" }}>Exciting new machine learning projects are currently under development.</Body>
+          </div>
+        ) : (
+          categories.map(category => {
+            const categoryProjects = TOP_PROJECTS.filter(p => p.category === category).slice(0, 5);
+            return (
+              <div key={category} style={{ marginBottom: "5rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2.5rem" }}>
+                  <h3 style={{ fontFamily: "'Inter', sans-serif", color: TextMain, fontSize: "1.2rem", fontWeight: 800, letterSpacing: "-0.01em" }}>{category}</h3>
+                  <div style={{ flex: 1, height: "1px", background: `#D1D1D1` }} />
+                </div>
 
-              <div style={{ display: "grid", gap: "2rem" }}>
-                {categoryProjects.map((p) => (
-                  <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "3rem", position: "relative", overflow: "hidden", display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }}>
-                    
-                    <div style={{ position: "absolute", right: -100, top: -100, width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${p.accent}20 0%, transparent 70%)`, pointerEvents: "none" }} />
+                <div style={{ display: "grid", gap: "2rem" }}>
+                  {categoryProjects.map((p) => (
+                    <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "3rem", position: "relative", overflow: "hidden", display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }}>
+                      
+                      <div style={{ position: "absolute", right: -100, top: -100, width: 300, height: 300, borderRadius: "50%", background: `radial-gradient(circle, ${p.accent}20 0%, transparent 70%)`, pointerEvents: "none" }} />
 
-                    <div>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
-                        <span className="accent-chip" style={{ background: `${p.accent}15`, color: p.accent, border: `1px solid ${p.accent}30` }}>{p.badge}</span>
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
+                          <span className="accent-chip" style={{ background: `${p.accent}15`, color: p.accent, border: `1px solid ${p.accent}30` }}>{p.badge}</span>
+                          
+                          <div style={{ display: "flex", gap: "1.25rem" }}>
+                            {p.github && <a href={p.github} target="_blank" className="nav-link"><Github size={18} /> Source</a>}
+                            {p.apiDocs && <a href={p.apiDocs} target="_blank" className="nav-link"><Server size={18} /> API Docs</a>}
+                            {p.live && <a href={p.live} target="_blank" className="nav-link" style={{ color: p.accent }}><Activity size={18} /> Live Demo</a>}
+                          </div>
+                        </div>
+
+                        <h3 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.8rem", marginBottom: "1rem", letterSpacing: "-0.02em" }}>{p.title}</h3>
                         
-                        <div style={{ display: "flex", gap: "1.25rem" }}>
-                          {p.github && <a href={p.github} target="_blank" className="nav-link"><Github size={18} /> Source</a>}
-                          {p.apiDocs && <a href={p.apiDocs} target="_blank" className="nav-link"><Server size={18} /> API Docs</a>}
-                          {p.live && <a href={p.live} target="_blank" className="nav-link" style={{ color: p.accent }}><Activity size={18} /> Live Demo</a>}
+                        <div style={{ background: "rgba(255,255,255,0.4)", padding: "1.25rem", borderRadius: "8px", borderLeft: `3px solid ${p.accent}`, marginBottom: "1.5rem" }}>
+                          <p style={{ fontFamily: "'Inter', sans-serif", color: "#1F2937", fontSize: "0.95rem", lineHeight: 1.6 }}>
+                            <strong style={{ color: TextMain }}>The Problem: </strong>{p.problem}
+                          </p>
+                        </div>
+
+                        <Body style={{ marginBottom: "1.5rem" }}>{p.desc}</Body>
+
+                        {p.bullets && (
+                          <ul style={{ listStyle: "none", marginBottom: "2rem", display: "grid", gap: "0.75rem" }}>
+                            {p.bullets.map(b => (
+                              <li key={b} style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", fontSize: "0.95rem", display: "flex", alignItems: "flex-start", gap: "0.75rem", lineHeight: 1.5 }}>
+                                <CheckCircle size={18} color={p.accent} style={{ flexShrink: 0, marginTop: "2px" }} /> {b}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                          {p.tech.map(t => <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)" }}>{t}</span>)}
                         </div>
                       </div>
-
-                      <h3 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.8rem", marginBottom: "1rem", letterSpacing: "-0.02em" }}>{p.title}</h3>
-                      
-                      <div style={{ background: "rgba(255,255,255,0.4)", padding: "1.25rem", borderRadius: "8px", borderLeft: `3px solid ${p.accent}`, marginBottom: "1.5rem" }}>
-                        <p style={{ fontFamily: "'Inter', sans-serif", color: "#1F2937", fontSize: "0.95rem", lineHeight: 1.6 }}>
-                          <strong style={{ color: TextMain }}>The Problem: </strong>{p.problem}
-                        </p>
-                      </div>
-
-                      <Body style={{ marginBottom: "1.5rem" }}>{p.desc}</Body>
-
-                      {p.bullets && (
-                        <ul style={{ listStyle: "none", marginBottom: "2rem", display: "grid", gap: "0.75rem" }}>
-                          {p.bullets.map(b => (
-                            <li key={b} style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", fontSize: "0.95rem", display: "flex", alignItems: "flex-start", gap: "0.75rem", lineHeight: 1.5 }}>
-                              <CheckCircle size={18} color={p.accent} style={{ flexShrink: 0, marginTop: "2px" }} /> {b}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                        {p.tech.map(t => <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)" }}>{t}</span>)}
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })
-      )}
+            );
+          })
+        )}
+      </div>
     </FadeSection>
   );
 }
@@ -915,52 +883,52 @@ function FullProjectLibraryPage() {
 
   return (
     <div style={{ minHeight: "100vh", paddingTop: "120px", paddingBottom: "6rem", background: "#E7E7E7" }}>
-      <FadeSection id="library-header" style={{ padding: "0 1.5rem" }}>
-        
-        <Label>Archive</Label>
-        <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
-        <Body style={{ marginTop: "1rem", marginBottom: "3rem", maxWidth: 600 }}>Browse the full archive of scripts, dashboards, and integrations. Use the smart search to find specific tech stacks.</Body>
+      <FadeSection id="library-header" style={{ padding: "0 0" }}>
+        <div className="container">
+          <Label>Archive</Label>
+          <H style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>Comprehensive Project Library</H>
+          <Body style={{ marginTop: "1rem", marginBottom: "3rem", maxWidth: 600 }}>Browse the full archive of scripts, dashboards, and integrations. Use the smart search to find specific tech stacks.</Body>
 
-        <div style={{ position: "relative", marginBottom: "2rem" }}>
-          <Search size={20} className="search-icon" />
-          <input type="text" placeholder="Search Python, FastAPI, Random Forest..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="search-bar" />
-        </div>
+          <div style={{ position: "relative", marginBottom: "2rem" }}>
+            <Search size={20} className="search-icon" />
+            <input type="text" placeholder="Search Python, FastAPI, Random Forest..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="search-bar" />
+          </div>
 
-        <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginBottom: "4rem" }}>
-          {FILTERS.map(f => (
-            <button key={f.key} className={`filter-btn ${activeFilter === f.key ? "filter-btn-active" : "filter-btn-inactive"}`} onClick={() => setActiveFilter(f.key)}>{f.label}</button>
-          ))}
-        </div>
-
-        {results.length > 0 ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(340px,1fr))", gap: "2rem" }}>
-            {results.map(p => (
-              <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "2rem", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-                  <span className="tech-chip" style={{ background: "rgba(255,255,255,0.6)", border: "none" }}>{p.category}</span>
-                  <div style={{ display: "flex", gap: "0.75rem" }}>
-                    {p.github && <a href={p.github} target="_blank" title="Code" className="nav-link"><Github size={18} /></a>}
-                    {p.apiDocs && <a href={p.apiDocs} target="_blank" title="API" className="nav-link"><Server size={18} /></a>}
-                    {p.live && <a href={p.live} target="_blank" title="Live" className="nav-link" style={{ color: Accent }}><Activity size={18} /></a>}
-                  </div>
-                </div>
-                <h3 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 700, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.01em" }}>{p.title}</h3>
-                <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>{p.desc}</Body>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "auto" }}>
-                  {p.tech.map(t => <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1" }}>{t}</span>)}
-                </div>
-              </div>
+          <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginBottom: "4rem" }}>
+            {FILTERS.map(f => (
+              <button key={f.key} className={`filter-btn ${activeFilter === f.key ? "filter-btn-active" : "filter-btn-inactive"}`} onClick={() => setActiveFilter(f.key)}>{f.label}</button>
             ))}
           </div>
-        ) : (
-          <div style={{ textAlign: "center", padding: "6rem 0", background: "rgba(255,255,255,0.4)", borderRadius: "16px", border: "1px dashed #D1D1D1" }}>
-            <Database size={48} color="#B6B6B6" style={{ margin: "0 auto 1rem" }} />
-            <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "1.5rem", color: TextMain, fontWeight: 700 }}>No results found</p>
-            <Body>Try adjusting your search terms.</Body>
-            <button onClick={() => {setSearchTerm(""); setActiveFilter("all");}} className="ghost-btn" style={{ marginTop: "1.5rem" }}>Clear Search</button>
-          </div>
-        )}
 
+          {results.length > 0 ? (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(340px,1fr))", gap: "2rem" }}>
+              {results.map(p => (
+                <div key={p.id} className="glass-card glass-card-hover" style={{ padding: "2rem", display: "flex", flexDirection: "column" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
+                    <span className="tech-chip" style={{ background: "rgba(255,255,255,0.6)", border: "none" }}>{p.category}</span>
+                    <div style={{ display: "flex", gap: "0.75rem" }}>
+                      {p.github && <a href={p.github} target="_blank" title="Code" className="nav-link"><Github size={18} /></a>}
+                      {p.apiDocs && <a href={p.apiDocs} target="_blank" title="API" className="nav-link"><Server size={18} /></a>}
+                      {p.live && <a href={p.live} target="_blank" title="Live" className="nav-link" style={{ color: Accent }}><Activity size={18} /></a>}
+                    </div>
+                  </div>
+                  <h3 style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 700, fontSize: "1.25rem", marginBottom: "1rem", letterSpacing: "-0.01em" }}>{p.title}</h3>
+                  <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>{p.desc}</Body>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "auto" }}>
+                    {p.tech.map(t => <span key={t} className="tech-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1" }}>{t}</span>)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", padding: "6rem 0", background: "rgba(255,255,255,0.4)", borderRadius: "16px", border: "1px dashed #D1D1D1" }}>
+              <Database size={48} color="#B6B6B6" style={{ margin: "0 auto 1rem" }} />
+              <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: "1.5rem", color: TextMain, fontWeight: 700 }}>No results found</p>
+              <Body>Try adjusting your search terms.</Body>
+              <button onClick={() => {setSearchTerm(""); setActiveFilter("all");}} className="ghost-btn" style={{ marginTop: "1.5rem" }}>Clear Search</button>
+            </div>
+          )}
+        </div>
       </FadeSection>
     </div>
   );
@@ -975,40 +943,40 @@ function Research() {
 
   return (
     <FadeSection id="research" style={{ padding: "6rem 1.5rem" }}>
-      
-      <Label>Academia</Label>
-      <H>Research Papers</H>
-      
-      {isCarousel ? (
-        <div className="carousel-container" style={{ marginTop: "3rem" }}>
-          {RESEARCH.map(r => (
-            <div key={r.id} className="glass-card carousel-card glass-card-hover" style={{ padding: "2.5rem" }}>
-              <span className="accent-chip" style={{ alignSelf: "flex-start", marginBottom: "1.5rem" }}>{r.status}</span>
-              <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.3rem", lineHeight: 1.4, marginBottom: "1rem" }}>{r.title}</p>
-              <Body style={{ fontSize: "0.95rem", marginBottom: "1.5rem", flexGrow: 1 }}>{r.abstract}</Body>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>{r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}</div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ marginTop: "3rem", display: "grid", gap: "1.5rem" }}>
-          {RESEARCH.map(r => (
-            <div key={r.id} className="glass-card glass-card-hover" style={{ padding: "3rem", display: "flex", flexDirection: "column", borderLeft: `4px solid ${Accent}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <BookOpen size={20} color={Accent} />
-                  <span style={{ fontFamily: "'Inter', sans-serif", color: Accent, fontSize: "0.85rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>Academic Publication</span>
-                </div>
-                <span className="accent-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1", color: TextMain }}>{r.status}</span>
+      <div className="container">
+        <Label>Academia</Label>
+        <H>Research Papers</H>
+        
+        {isCarousel ? (
+          <div className="carousel-container" style={{ marginTop: "3rem" }}>
+            {RESEARCH.map(r => (
+              <div key={r.id} className="glass-card carousel-card glass-card-hover" style={{ padding: "2.5rem" }}>
+                <span className="accent-chip" style={{ alignSelf: "flex-start", marginBottom: "1.5rem" }}>{r.status}</span>
+                <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.3rem", lineHeight: 1.4, marginBottom: "1rem" }}>{r.title}</p>
+                <Body style={{ fontSize: "0.95rem", marginBottom: "1.5rem", flexGrow: 1 }}>{r.abstract}</Body>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>{r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}</div>
               </div>
-              <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.4, marginBottom: "1rem" }}>{r.title}</p>
-              <Body style={{ fontSize: "1rem", marginBottom: "1.5rem", maxWidth: 800 }}>{r.abstract}</Body>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>{r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}</div>
-            </div>
-          ))}
-        </div>
-      )}
-      
+            ))}
+          </div>
+        ) : (
+          <div style={{ marginTop: "3rem", display: "grid", gap: "1.5rem" }}>
+            {RESEARCH.map(r => (
+              <div key={r.id} className="glass-card glass-card-hover" style={{ padding: "3rem", display: "flex", flexDirection: "column", borderLeft: `4px solid ${Accent}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <BookOpen size={20} color={Accent} />
+                    <span style={{ fontFamily: "'Inter', sans-serif", color: Accent, fontSize: "0.85rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>Academic Publication</span>
+                  </div>
+                  <span className="accent-chip" style={{ background: "rgba(255,255,255,0.5)", border: "1px solid #D1D1D1", color: TextMain }}>{r.status}</span>
+                </div>
+                <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.5rem", lineHeight: 1.4, marginBottom: "1rem" }}>{r.title}</p>
+                <Body style={{ fontSize: "1rem", marginBottom: "1.5rem", maxWidth: 800 }}>{r.abstract}</Body>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>{r.topics.map(t => <span key={t} className="tech-chip">{t}</span>)}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </FadeSection>
   );
 }
@@ -1021,51 +989,51 @@ function Leadership() {
 
   return (
     <FadeSection id="leadership" style={{ padding: "6rem 1.5rem" }}>
-      
-      <Label>Discipline</Label>
-      <H>Beyond the Code</H>
-      <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
-      
-      <div className={isCarousel ? "carousel-container" : ""} style={!isCarousel ? { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "2rem" } : {}}>
-        {LEADERSHIP_CARDS.map(card => (
-          <div key={card.id} className={`glass-card glass-card-hover ${isCarousel ? 'carousel-card' : ''}`} style={{ padding: "2.5rem", display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-              <div style={{ ...iconBox(card.iconColor), background: `${card.iconColor}15` }}>
-                {card.isMedal ? <Award size={24} color={card.iconColor} /> : <Star size={24} color={card.iconColor} />}
+      <div className="container">
+        <Label>Discipline</Label>
+        <H>Beyond the Code</H>
+        <Body style={{ marginTop: "0.5rem", marginBottom: "3rem", maxWidth: 520 }}>Execution, discipline, and leadership developed both inside and outside the lab.</Body>
+        
+        <div className={isCarousel ? "carousel-container" : ""} style={!isCarousel ? { display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "2rem" } : {}}>
+          {LEADERSHIP_CARDS.map(card => (
+            <div key={card.id} className={`glass-card glass-card-hover ${isCarousel ? 'carousel-card' : ''}`} style={{ padding: "2.5rem", display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", gap: "1.25rem", alignItems: "flex-start", marginBottom: "1.5rem" }}>
+                <div style={{ ...iconBox(card.iconColor), background: `${card.iconColor}15` }}>
+                  {card.isMedal ? <Award size={24} color={card.iconColor} /> : <Star size={24} color={card.iconColor} />}
+                </div>
+                <div>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.2rem", letterSpacing: "-0.01em" }}>{card.title}</p>
+                  <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.9rem", marginTop: "0.25rem", fontWeight: 500 }}>{card.subtitle}</p>
+                </div>
               </div>
-              <div>
-                <p style={{ fontFamily: "'Outfit', sans-serif", color: TextMain, fontWeight: 800, fontSize: "1.2rem", letterSpacing: "-0.01em" }}>{card.title}</p>
-                <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.9rem", marginTop: "0.25rem", fontWeight: 500 }}>{card.subtitle}</p>
-              </div>
-            </div>
-            
-            <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>{card.desc}</Body>
-            
-            {card.isMedal ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "auto" }}>
-                {card.items.map(m => (
-                  <div key={m.title} style={{ background: "rgba(255,255,255,0.4)", border: `1px solid #D1D1D1`, borderRadius: 10, padding: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <p style={{ fontFamily: "'Inter', sans-serif", color: TextMain, fontWeight: 700, fontSize: "0.9rem" }}>{m.title}</p>
-                      <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.75rem" }}>{m.tournament}</p>
+              
+              <Body style={{ fontSize: "0.95rem", marginBottom: "2rem", flexGrow: 1 }}>{card.desc}</Body>
+              
+              {card.isMedal ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "auto" }}>
+                  {card.items.map(m => (
+                    <div key={m.title} style={{ background: "rgba(255,255,255,0.4)", border: `1px solid #D1D1D1`, borderRadius: 10, padding: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div>
+                        <p style={{ fontFamily: "'Inter', sans-serif", color: TextMain, fontWeight: 700, fontSize: "0.9rem" }}>{m.title}</p>
+                        <p style={{ fontFamily: "'Inter', sans-serif", color: "#9B9B9B", fontSize: "0.75rem" }}>{m.tournament}</p>
+                      </div>
+                      <span style={{ fontFamily: "'Inter', sans-serif", color: m.color, fontWeight: 800, fontSize: "0.9rem" }}>{m.emoji} {m.medal}</span>
                     </div>
-                    <span style={{ fontFamily: "'Inter', sans-serif", color: m.color, fontWeight: 800, fontSize: "0.9rem" }}>{m.emoji} {m.medal}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "auto" }}>
-                {card.items.map(a => (
-                  <li key={a.text} style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", fontSize: "0.9rem", display: "flex", alignItems: "flex-start", gap: "0.75rem", lineHeight: 1.5 }}>
-                    <ArrowRight size={16} color={card.iconColor} style={{ marginTop: "2px", flexShrink: 0 }} /> {a.text}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+                  ))}
+                </div>
+              ) : (
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "auto" }}>
+                  {card.items.map(a => (
+                    <li key={a.text} style={{ fontFamily: "'Inter', sans-serif", color: "#4B5563", fontSize: "0.9rem", display: "flex", alignItems: "flex-start", gap: "0.75rem", lineHeight: 1.5 }}>
+                      <ArrowRight size={16} color={card.iconColor} style={{ marginTop: "2px", flexShrink: 0 }} /> {a.text}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      
     </FadeSection>
   );
 }
@@ -1076,35 +1044,37 @@ function Leadership() {
 function Contact({ copyEmail }) {
   return (
     <FadeSection id="hireme" style={{ padding: "6rem 1.5rem" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-        <Label>Hire Me</Label>
-        <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>Let's Build Together</H>
-        <Body style={{ margin: "0 auto 3rem", maxWidth: 500, fontSize: "1.1rem" }}>
-          My inbox is always open. Whether you have a robust project, a fractional retainer opportunity, or just want to connect, I'll reply within 24 hours.
-        </Body>
+      <div className="container">
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+          <Label>Hire Me</Label>
+          <H style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", marginBottom: "1rem" }}>Let's Build Together</H>
+          <Body style={{ margin: "0 auto 3rem", maxWidth: 500, fontSize: "1.1rem" }}>
+            My inbox is always open. Whether you have a robust project, a fractional retainer opportunity, or just want to connect, I'll reply within 24 hours.
+          </Body>
 
-        <div className="glass-card" style={{ padding: "4rem 2rem", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: "400px", height: "400px", background: "rgba(16, 185, 129, 0.05)", filter: "blur(80px)", borderRadius: "50%", pointerEvents: "none" }} />
-          
-          <div style={{ margin: "0 auto 1.5rem", width: 80, height: 80, borderRadius: 24, background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Mail size={40} color={Accent} />
-          </div>
-          
-          <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: "clamp(1.5rem, 4vw, 2.5rem)", color: TextMain, marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>
-            {PERSONAL.email}
-          </h3>
+          <div className="glass-card" style={{ padding: "4rem 2rem", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)", width: "400px", height: "400px", background: "rgba(16, 185, 129, 0.05)", filter: "blur(80px)", borderRadius: "50%", pointerEvents: "none" }} />
+            
+            <div style={{ margin: "0 auto 1.5rem", width: 80, height: 80, borderRadius: 24, background: "rgba(16, 185, 129, 0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Mail size={40} color={Accent} />
+            </div>
+            
+            <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 900, fontSize: "clamp(1.5rem, 4vw, 2.5rem)", color: TextMain, marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>
+              {PERSONAL.email}
+            </h3>
 
-          <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap", margin: "2.5rem 0" }}>
-            <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${PERSONAL.email}`} target="_blank" rel="noopener noreferrer" className="accent-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Mail size={20} /> Open Gmail</a>
-            <button onClick={copyEmail} className="ghost-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Copy size={20} /> Copy</button>
-          </div>
-          
-          <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
-             {[{ href: PERSONAL.linkedin, Icon: Linkedin, label: "LinkedIn" }, { href: PERSONAL.github, Icon: Github, label: "GitHub" }, { href: PERSONAL.fiverr, Icon: Fiverr, label: "Fiverr" }].map(({ href, Icon, label }) => (
-               <a key={label} href={href} target="_blank" className="ghost-btn" style={{ padding: "0.5rem 1.1rem", fontSize: "0.85rem" }}>
-                 <Icon size={16} /> {label}
-               </a>
-             ))}
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap", margin: "2.5rem 0" }}>
+              <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${PERSONAL.email}`} target="_blank" rel="noopener noreferrer" className="accent-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Mail size={20} /> Open Gmail</a>
+              <button onClick={copyEmail} className="ghost-btn" style={{ padding: "1rem 2.5rem", fontSize: "1.05rem" }}><Copy size={20} /> Copy</button>
+            </div>
+            
+            <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap", marginTop: "1rem" }}>
+               {[{ href: PERSONAL.linkedin, Icon: Linkedin, label: "LinkedIn" }, { href: PERSONAL.github, Icon: Github, label: "GitHub" }, { href: PERSONAL.fiverr, Icon: Fiverr, label: "Fiverr" }].map(({ href, Icon, label }) => (
+                 <a key={label} href={href} target="_blank" className="ghost-btn" style={{ padding: "0.5rem 1.1rem", fontSize: "0.85rem" }}>
+                   <Icon size={16} /> {label}
+                 </a>
+               ))}
+            </div>
           </div>
         </div>
       </div>
@@ -1182,32 +1152,27 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="master-root">
+    <div style={{ minHeight: "100vh", position: "relative", overflowX: "hidden" }}>
       <style>{GLOBAL_CSS}</style>
       
-      <Nav currentView={currentView} navigateToHome={navigateToHome} />
+      {currentView === "home" && <YScrollTracker />}
 
-      <div className="layout-container">
+      <div className="main-wrapper">
+        <Nav currentView={currentView} navigateToHome={navigateToHome} />
         
-        <div className="sidebar-channel">
-          {currentView === "home" && <YScrollTracker />}
-        </div>
-        
-        <div className="main-content">
-          {currentView === "home" ? (
-            <>
-              <Hero copyEmail={copyEmail} navigateToLibrary={navigateToLibrary} />
-              <About />
-              <Services />
-              <TopProjects onNavigateToLibrary={navigateToLibrary} />
-              <Research />
-              <Leadership />
-              <Contact copyEmail={copyEmail} />
-            </>
-          ) : (
-            <FullProjectLibraryPage />
-          )}
-        </div>
+        {currentView === "home" ? (
+          <>
+            <Hero copyEmail={copyEmail} navigateToLibrary={navigateToLibrary} />
+            <About />
+            <Services />
+            <TopProjects onNavigateToLibrary={navigateToLibrary} />
+            <Research />
+            <Leadership />
+            <Contact copyEmail={copyEmail} />
+          </>
+        ) : (
+          <FullProjectLibraryPage />
+        )}
         
       </div>
       
